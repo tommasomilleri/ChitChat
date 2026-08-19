@@ -10,6 +10,11 @@ public class LevelManager : MonoBehaviour
     [Header("Level Settings")]
     public int correctImage;
 
+
+    public GameObject Lvl2;
+    public GameObject Lvl1;
+    public GameObject canvas;
+
     void Start()
     {
         // At the start of the level, the cheese is perfect (Max Quality)
@@ -55,8 +60,10 @@ public class LevelManager : MonoBehaviour
 
     void GoToNextLevel()
     {
-        // Implement your logic to load the next level here
-        // Example: SceneManager.LoadScene("NextLevelSceneName");
+        var newLevel = Instantiate(Lvl2);
+        newLevel.transform.SetParent(canvas.transform);
+        Destroy(Lvl1);
+       
     }
 
     void CheeseSpoiled()
