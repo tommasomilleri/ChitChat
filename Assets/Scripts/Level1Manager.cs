@@ -7,7 +7,6 @@ public class LevelManager : MonoBehaviour
     public int maxQuality = 100;
     private int currentQuality;
     public int wrongAnswerPenalty = 20; // Quality points lost for each mistake
-
     [Header("Level Settings")]
     public int correctImage;
 
@@ -57,7 +56,6 @@ public class LevelManager : MonoBehaviour
     void GoToNextLevel()
     {
         // Implement your logic to load the next level here
-        Debug.Log("Loading next level...");
         // Example: SceneManager.LoadScene("NextLevelSceneName");
     }
 
