@@ -1,55 +1,65 @@
-/*using UnityEngine;
-using TMPro;
+using UnityEngine;
 
-public class Level4Manager : Monobehaviour
+public class Level4Manager : MonoBehaviour
 {
-    private string [] correctSequence = 
-    { "drain", "press", "flip"
+    private string[] correctSequence =
+    {
+        "drain",
+        "press",
+        "flip",
+        "press",
+        "flip"
     };
 
     private int currentStep = 0;
 
-    public TMP_Text progressText; // Reference to the TextMeshProUGUI component for displaying progress
+    // Becomes true when the player makes a mistake
+    private bool sequenceIsWrong = false;
 
-    void Start()
-    {
-        UpdateProgress();
-    }
-    public void ClickProcess(stringprocess)
 
+    public void ClickProcess(string process)
     {
+        // If they already made a mistake,
+        // they need to reset first
+        if (sequenceIsWrong)
+        {
+            Debug.Log("Sequence is wrong. Press RESET to try again.");
+            return;
+        }
+
+        // Check the current click
         if (process == correctSequence[currentStep])
         {
+            Debug.Log("Correct: " + process);
+
             currentStep++;
-            UpdateProgress();
 
+            // Check if the entire sequence is complete
             if (currentStep == correctSequence.Length)
-           {
-            LevelComplete();
-           }
-
+            {
+                LevelComplete();
+            }
         }
         else
         {
-            Debug.Log("Wrong step! Cheese quality drops.");
-            // You can add code here to decrease cheese quality or handle the wrong step
+            Debug.Log("Wrong! Press RESET to try again.");
+
+            sequenceIsWrong = true;
         }
-
     }
 
-    void UpdateProgress()
+
+    public void ResetSequence()
     {
+        currentStep = 0;
+        sequenceIsWrong = false;
+
+        Debug.Log("Sequence reset. Try again!");
     }
+
 
     void LevelComplete()
     {
-       
+        Debug.Log("LEVEL 4 COMPLETE!");
     }
-
-    public void ResetSequence ()
-
-    currentStep = 0;
-    UpdateProgress();
-   
-    }
-*/
+}
