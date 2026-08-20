@@ -6,28 +6,133 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler
 {
 
     public GameObject NextLevel;
-    public GameObject CurrentLevel;
+    public GameObject CurrentLevel; 
     public GameObject canvas;
-    [Header("UI References")]
-    [Tooltip("Drag the Thermometer Slider from the Hierarchy here")]
     public Slider thermometerSlider;
-
+    public GameObject foam;
+    public GameObject steam;
+    public GameObject check;
+    private int tempstage = 0;
+    private int potstate = 0;
+    private int goaltemp = 0;
+    private float timer = 0f;
+    private float checkTimer = 0f;
+    public float checkDuration = 1f;
+    public float timeLimit = 10f; 
+    public float temperatureStep = 32f;
+    public int winsneeded = 5;
+    private int currentwins = 0;
     [Header("Rotation & Temperature Settings")]
     [Tooltip("Degrees of visual rotation for each single click")]
     public float rotationStep = 15f;
-
-    [Tooltip("How much the temperature increases/decreases on the slider per click")]
-    public float temperatureStep = 2f;
-
-    [Header("Level Progression Settings")]
-    [Tooltip("The number the counter must reach to trigger the next level")]
-    public int targetCounter = 5;
-
-    // Internal counter tracking the player's progress
-    private int currentCounter = 0;
-
-    // Safety check to prevent firing the end-level logic multiple times
     private bool levelCompleted = false;
+
+    void increasestage()
+    {
+        if (tempstage < 2)
+        {
+            tempstage++;
+            thermometerSlider.value += temperatureStep;
+            transform.Rotate(0f, 0f, -rotationStep);
+        
+        }
+    }
+
+    void decreasestage()
+    {
+        if (tempstage > 0)
+        {
+            tempstage--;
+            thermometerSlider.value -= temperatureStep;
+            transform.Rotate(0f, 0f, rotationStep);
+        }
+    }
+
+    void randompotstate()
+    {
+        potstate = Random.Range(0, 3);
+        Debug.Log("Pot state is: " + potstate);
+        updatepotgraphic();
+    }
+
+    void updatepotgraphic()
+    {
+        // Update the pot graphic based on the potstate
+        // This is a placeholder; implement your own logic to change the pot's appearance
+        Debug.Log("Updating pot graphic for state: " + potstate);
+
+        if (potstate == 2)
+        {
+            foam.SetActive(true);
+            steam.SetActive(false);
+        }
+        else if (potstate == 1)
+        {
+            foam.SetActive(false);
+            steam.SetActive(true);
+        }
+        else
+        {
+            foam.SetActive(false);
+            steam.SetActive(false);
+        }
+    }
+
+    void getgoaltemp()
+    {
+        if (potstate == tempstage)
+        {
+            goaltemp = 2;
+
+        }
+
+        else if (potstate == tempstage + 1 || potstate == tempstage - 2)
+        {
+            goaltemp = 1;
+        }
+
+        else
+        {
+            goaltemp = 0;
+        }
+    }
+
+    void Update()
+    {
+        timer += Time.deltaTime;
+        checkTimer += Time.deltaTime;
+
+        if (checkTimer >= checkDuration) {
+            check.SetActive(false);
+        }
+
+        if (timer >= timeLimit)
+        {
+            if (goaltemp == tempstage)
+            {
+                checkTimer = 0f;
+                check.SetActive(true);
+                currentwins++;
+                Debug.Log("Correct! Current wins: " + currentwins);
+            }
+            else
+            {
+                Debug.Log("Incorrect! Current wins: " + currentwins);
+            }
+            randompotstate();
+            getgoaltemp();
+            timer = 0f;
+        }
+
+        if (currentwins >= winsneeded && !levelCompleted)
+        {
+            Debug.Log("LEVEL COMPLETE!");
+            levelCompleted = true;
+            GoToNextLevel();
+        }
+    }
+
+
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -37,40 +142,12 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler
         // LEFT CLICK: Turn left -> DECREASE temperature and counter
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            // Rotate the knob left (counter-clockwise)
-            transform.Rotate(0f, 0f, rotationStep);
-
-            // Decrease the slider
-            if (thermometerSlider != null)
-            {
-                thermometerSlider.value -= temperatureStep;
-            }
-
-            // Decrease the counter
-            currentCounter--;
-            Debug.Log("Counter decreased. Current count: " + currentCounter);
+            decreasestage();
         }
         // RIGHT CLICK: Turn right -> INCREASE temperature and counter
         else if (eventData.button == PointerEventData.InputButton.Right)
         {
-            // Rotate the knob right (clockwise)
-            transform.Rotate(0f, 0f, -rotationStep);
-
-            // Increase the slider
-            if (thermometerSlider != null)
-            {
-                thermometerSlider.value += temperatureStep;
-            }
-
-            // Increase the counter
-            currentCounter++;
-            Debug.Log("Counter increased. Current count: " + currentCounter);
-
-            // Check if the target number has been reached
-            if (currentCounter >= targetCounter)
-            {
-                GoToNextLevel();
-            }
+            increasestage();
         }
     }
 
