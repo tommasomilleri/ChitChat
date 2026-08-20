@@ -89,7 +89,7 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler
         {
             Destroy(CurrentLevel);
         }
-        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-        Cursor.visible = true;
+        //Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        //Cursor.visible = true;
     }
 }
