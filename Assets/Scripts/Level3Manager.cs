@@ -10,7 +10,9 @@ public class Level3Manager : MonoBehaviour
         "Salt",
         "Annatto"
     };
-
+    public GameObject NextLevel;
+    public GameObject CurrentLevel;
+    public GameObject canvas;
     private int currentStep = 0;
 
     public TMP_Text orderText;
@@ -74,6 +76,22 @@ public class Level3Manager : MonoBehaviour
     void LevelComplete()
     {
         Debug.Log("LEVEL 3 COMPLETE!");
+        GoToNextLevel();
         // Logic to load the next level or show the victory menu will go here
+    }
+
+    void GoToNextLevel()
+    {
+        if (NextLevel != null && canvas != null)
+        {
+            var newLevel = Instantiate(NextLevel);
+            // Passing 'false' prevents the UI from scaling weirdly when parented
+            newLevel.transform.SetParent(canvas.transform, false);
+        }
+
+        if (CurrentLevel != null)
+        {
+            Destroy(CurrentLevel);
+        }
     }
 }
