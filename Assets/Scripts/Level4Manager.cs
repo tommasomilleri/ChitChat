@@ -1,4 +1,4 @@
-using UnityEngine;
+/*using UnityEngine;
 using TMPro;
 
 public class Level4Manager : Monobehaviour
@@ -50,5 +50,6 @@ public class Level4Manager : Monobehaviour
 
     currentStep = 0;
     UpdateProgress();
+   
     }
-}
+*/
