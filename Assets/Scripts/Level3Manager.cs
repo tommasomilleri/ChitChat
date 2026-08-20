@@ -22,6 +22,19 @@ public class Level3Manager : MonoBehaviour
 
     public void CheckIngredient(DraggableIngredient ingredient)
     {
+        // Prevents IndexOutOfRangeException if extra ingredients are triggered after level completion
+        if (currentStep >= correctOrder.Length)
+        {
+            return;
+        }
+
+        // Safety check to prevent NullReferenceException
+        if (ingredient == null)
+        {
+            Debug.LogWarning("No ingredient passed to CheckIngredient!");
+            return;
+        }
+
         if (ingredient.ingredientName == correctOrder[currentStep])
         {
             Debug.Log("Correct ingredient!");
@@ -41,16 +54,26 @@ public class Level3Manager : MonoBehaviour
         else
         {
             Debug.Log("Wrong ingredient!");
+            // Optional: You can call a function here to reset the wrong ingredient's position
         }
     }
 
     void UpdateText()
     {
-        orderText.text = "Added: " + currentStep + " / 4";
+        if (orderText != null)
+        {
+            // Replaced the hardcoded "4" with correctOrder.Length to make the code dynamic
+            orderText.text = "Added: " + currentStep + " / " + correctOrder.Length;
+        }
+        else
+        {
+            Debug.LogWarning("orderText has not been assigned in the Inspector!");
+        }
     }
 
     void LevelComplete()
     {
         Debug.Log("LEVEL 3 COMPLETE!");
+        // Logic to load the next level or show the victory menu will go here
     }
 }

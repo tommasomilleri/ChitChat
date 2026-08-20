@@ -1038,7 +1038,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3408034768423729997, guid: d04ec774d6e5af1458e70a11d36550c8, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3562790337254143517, guid: d04ec774d6e5af1458e70a11d36550c8, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ae136c261cf1643f59f2b74493eaec54, type: 3}
+    - target: {fileID: 6664606359598393858, guid: d04ec774d6e5af1458e70a11d36550c8, type: 3}
+      propertyPath: ingredientName
+      value: Salt
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719903198975946233, guid: d04ec774d6e5af1458e70a11d36550c8, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 6719903198975946233, guid: d04ec774d6e5af1458e70a11d36550c8, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 7539649754203710222, guid: d04ec774d6e5af1458e70a11d36550c8, type: 3}
       propertyPath: m_Pivot.x
@@ -1374,6 +1390,10 @@ PrefabInstance:
     - target: {fileID: 3501438665506442231, guid: a8f3ff941a3ea0d478be1ae199723ce9, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: selectImage
+      objectReference: {fileID: 0}
+    - target: {fileID: 3577371427033496080, guid: a8f3ff941a3ea0d478be1ae199723ce9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4143426281958321113, guid: a8f3ff941a3ea0d478be1ae199723ce9, type: 3}
       propertyPath: m_Sprite
