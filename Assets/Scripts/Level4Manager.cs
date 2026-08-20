@@ -13,19 +13,8 @@ public class Level4Manager : MonoBehaviour
 
     private int currentStep = 0;
 
-    // Becomes true when the player makes a mistake
-    private bool sequenceIsWrong = false;
-
-
     public void ClickProcess(string process)
     {
-        // If they already made a mistake,
-        // they need to reset first
-        if (sequenceIsWrong)
-        {
-            Debug.Log("Sequence is wrong. Press RESET to try again.");
-            return;
-        }
 
         // Check the current click
         if (process == correctSequence[currentStep])
@@ -42,9 +31,8 @@ public class Level4Manager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Wrong! Press RESET to try again.");
-
-            sequenceIsWrong = true;
+            Debug.Log("Wrong! RESETing sequence.");
+            ResetSequence();
         }
     }
 
@@ -52,8 +40,6 @@ public class Level4Manager : MonoBehaviour
     public void ResetSequence()
     {
         currentStep = 0;
-        sequenceIsWrong = false;
-
         Debug.Log("Sequence reset. Try again!");
     }
 
