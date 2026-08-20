@@ -39,6 +39,7 @@ public class LevelManager : MonoBehaviour
         if (NextLevel != null && canvas != null)
         {
             var newLevel = Instantiate(NextLevel);
+
             // Passing 'false' prevents the UI from scaling weirdly when parented
             newLevel.transform.SetParent(canvas.transform, false);
         }
