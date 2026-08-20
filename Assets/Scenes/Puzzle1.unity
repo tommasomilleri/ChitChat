@@ -237,6 +237,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lvl2
       objectReference: {fileID: 0}
+    - target: {fileID: 499395297631595403, guid: 6d8b39cf39cc0d74081ef3af732e2be8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 905053515705631443, guid: 6d8b39cf39cc0d74081ef3af732e2be8, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -549,6 +553,7 @@ GameObject:
   m_Component:
   - component: {fileID: 534810883}
   - component: {fileID: 534810882}
+  - component: {fileID: 534810884}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -568,11 +573,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66d66a75fd6c69c44b78c7bedc4b1448, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelManager
-  qualityBar: {fileID: 967985709}
-  maxQuality: 100
-  wrongAnswerPenalty: 20
   correctImage: 2
-  Lvl2: {fileID: 499395297631595403, guid: 6d8b39cf39cc0d74081ef3af732e2be8, type: 3}
+  wrongAnswerPenalty: 20
+  Lvl2: {fileID: 537631394}
   Lvl1: {fileID: 353578571}
   canvas: {fileID: 172658393}
 --- !u!4 &534810883
@@ -590,6 +593,26 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &534810884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 534810881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96eceb3b3466e55418a6b3f631af1173, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CheeseQualityManager
+  qualityBar: {fileID: 967985709}
+  maxQuality: 100
+  currentQuality: 0
+--- !u!1 &537631394 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 499395297631595403, guid: 6d8b39cf39cc0d74081ef3af732e2be8, type: 3}
+  m_PrefabInstance: {fileID: 263396248}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &537631395 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 905053515705631443, guid: 6d8b39cf39cc0d74081ef3af732e2be8, type: 3}
@@ -1443,6 +1466,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: selectImage
       objectReference: {fileID: 0}
+    - target: {fileID: 361985428536517437, guid: a8f3ff941a3ea0d478be1ae199723ce9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LevelManager, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 518810985211864689, guid: a8f3ff941a3ea0d478be1ae199723ce9, type: 3}
       propertyPath: m_Type
       value: 0
@@ -1499,6 +1526,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: selectImage
       objectReference: {fileID: 0}
+    - target: {fileID: 2074543132636974753, guid: a8f3ff941a3ea0d478be1ae199723ce9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LevelManager, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 2414317537972939225, guid: a8f3ff941a3ea0d478be1ae199723ce9, type: 3}
       propertyPath: m_SizeDelta.x
       value: 500
@@ -1527,9 +1558,13 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: selectImage
       objectReference: {fileID: 0}
+    - target: {fileID: 3501438665506442231, guid: a8f3ff941a3ea0d478be1ae199723ce9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LevelManager, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 3577371427033496080, guid: a8f3ff941a3ea0d478be1ae199723ce9, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4143426281958321113, guid: a8f3ff941a3ea0d478be1ae199723ce9, type: 3}
       propertyPath: m_Sprite
@@ -1634,6 +1669,10 @@ PrefabInstance:
     - target: {fileID: 7576436729632358494, guid: a8f3ff941a3ea0d478be1ae199723ce9, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: selectImage
+      objectReference: {fileID: 0}
+    - target: {fileID: 7576436729632358494, guid: a8f3ff941a3ea0d478be1ae199723ce9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LevelManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8036515269868741075, guid: a8f3ff941a3ea0d478be1ae199723ce9, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
