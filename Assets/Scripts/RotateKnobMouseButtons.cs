@@ -4,6 +4,10 @@ using UnityEngine.EventSystems;
 
 public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler
 {
+
+    public GameObject NextLevel;
+    public GameObject CurrentLevel;
+    public GameObject canvas;
     [Header("UI References")]
     [Tooltip("Drag the Thermometer Slider from the Hierarchy here")]
     public Slider thermometerSlider;
@@ -72,15 +76,17 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler
 
     void GoToNextLevel()
     {
-        levelCompleted = true;
-        Debug.Log("Target temperature reached! Moving to the next level...");
+        if (NextLevel != null && canvas != null)
+        {
+            var newLevel = Instantiate(NextLevel);
 
-        // NOTE: Here you will integrate your level transition logic.
-        // If your LevelManager is on the same GameObject, you can call it like this:
-        // GetComponent<LevelManager>().GoToNextLevel();
+            // Passing 'false' prevents the UI from scaling weirdly when parented
+            newLevel.transform.SetParent(canvas.transform, false);
+        }
 
-        // Alternatively, if you want to use public GameObjects to toggle UI panels 
-        // like we did in the previous script, you can add them at the top of this script 
-        // and do NextLevel.SetActive(true) and CurrentLevel.SetActive(false) here.
+        if (CurrentLevel != null)
+        {
+            Destroy(CurrentLevel);
+        }
     }
 }
