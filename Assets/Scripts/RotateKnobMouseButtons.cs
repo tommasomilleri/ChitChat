@@ -76,6 +76,7 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler
 
     void GoToNextLevel()
     {
+
         if (NextLevel != null && canvas != null)
         {
             var newLevel = Instantiate(NextLevel);
@@ -88,5 +89,7 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler
         {
             Destroy(CurrentLevel);
         }
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        Cursor.visible = true;
     }
 }

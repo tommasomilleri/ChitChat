@@ -1,40 +1,55 @@
 fileFormatVersion: 2
-guid: 4d24927421af94227a2f2672239922ac
+guid: ad5267611aa683082ba12ec46f20a111
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -106186790018914573
-    second: rennet 1_0
+      213: 7129097742379047179
+    second: rennett_new_0
   - first:
-      213: -2278569420408582969
-    second: rennet 1_1
+      213: 4038912618474627898
+    second: rennett_new_1
   - first:
-      213: 7057853919723989936
-    second: rennet 1_2
+      213: 2457708492907386803
+    second: rennett_new_2
   - first:
-      213: -7119776898744964311
-    second: rennet 1_3
+      213: -5922960456083660629
+    second: rennett_new_3
   - first:
-      213: -1274083252603184325
-    second: rennet 1_4
+      213: -8556194589286245426
+    second: rennett_new_4
   - first:
-      213: 3005672196494050779
-    second: rennet 1_5
+      213: 2034973616469963841
+    second: rennett_new_5
   - first:
-      213: -6101657922281210741
-    second: rennet 1_6
+      213: -8512101161996972437
+    second: rennett_new_6
   - first:
-      213: 1474750454695150427
-    second: rennet 1_7
+      213: -7915668259435906399
+    second: rennett_new_7
   - first:
-      213: 8120252624400518298
-    second: rennet 1_8
+      213: 2269320527178788461
+    second: rennett_new_8
   - first:
-      213: 5946979769825753358
-    second: rennet 1_9
+      213: 522541111812771719
+    second: rennett_new_9
   - first:
-      213: 4432006196527995456
-    second: rennet 1_10
+      213: -3563386537622323077
+    second: rennett_new_10
+  - first:
+      213: 3629077187263843796
+    second: rennett_new_11
+  - first:
+      213: 1732430018350598433
+    second: rennett_new_12
+  - first:
+      213: 5419574530341145411
+    second: rennett_new_13
+  - first:
+      213: -104426180563896712
+    second: rennett_new_14
+  - first:
+      213: -2826828175692353534
+    second: rennett_new_15
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -76,7 +91,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -139,17 +154,74 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: rennet 1_0
+      name: rennett_new_0
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 216
+        width: 19
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b09da8700a4afe260800000000000000
+      internalID: 7129097742379047179
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rennett_new_1
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 46
+        width: 172
+        height: 351
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a33e50f90a91d0830800000000000000
+      internalID: 4038912618474627898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rennett_new_2
       rect:
         serializedVersion: 2
         x: 0
-        y: 130
-        width: 9
-        height: 37
+        y: 135
+        width: 105
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -158,20 +230,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3f665155dafb68ef0800000000000000
-      internalID: -106186790018914573
+      spriteID: 3b794315ad88b1220800000000000000
+      internalID: 2457708492907386803
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rennet 1_1
+      name: rennett_new_3
       rect:
         serializedVersion: 2
-        x: 12
-        y: 60
-        width: 135
-        height: 178
+        x: 472
+        y: 176
+        width: 7
+        height: 6
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -180,20 +252,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7cc8a7c3f25e060e0800000000000000
-      internalID: -2278569420408582969
+      spriteID: ba0a27ca8da6dcda0800000000000000
+      internalID: -5922960456083660629
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rennet 1_2
+      name: rennett_new_4
       rect:
         serializedVersion: 2
-        x: 107
-        y: 26
-        width: 228
-        height: 371
+        x: 464
+        y: 161
+        width: 21
+        height: 14
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -202,20 +274,42 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0bb2fb1feb882f160800000000000000
-      internalID: 7057853919723989936
+      spriteID: ecb597c8a5a424980800000000000000
+      internalID: -8556194589286245426
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rennet 1_3
+      name: rennett_new_5
       rect:
         serializedVersion: 2
-        x: 459
+        x: 485
+        y: 143
+        width: 15
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 144fbf0f8bdad3c10800000000000000
+      internalID: 2034973616469963841
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rennett_new_6
+      rect:
+        serializedVersion: 2
+        x: 462
         y: 30
-        width: 41
-        height: 156
+        width: 38
+        height: 117
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -224,150 +318,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 92b264ef1a8713d90800000000000000
-      internalID: -7119776898744964311
+      spriteID: b6e0bfa9711fed980800000000000000
+      internalID: -8512101161996972437
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: rennet 1_4
+      name: rennett_new_7
       rect:
         serializedVersion: 2
-        x: 0
-        y: 91
-        width: 5
-        height: 34
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b3b105a380c815ee0800000000000000
-      internalID: -1274083252603184325
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: rennet 1_5
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 61
-        width: 9
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: bd5cb4f10fa46b920800000000000000
-      internalID: 3005672196494050779
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: rennet 1_6
-      rect:
-        serializedVersion: 2
-        x: 23
-        y: 72
-        width: 10
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b8cfa79927e825ba0800000000000000
-      internalID: -6101657922281210741
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: rennet 1_7
-      rect:
-        serializedVersion: 2
-        x: 36
-        y: 71
-        width: 14
-        height: 10
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b53437899bd577410800000000000000
-      internalID: 1474750454695150427
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: rennet 1_8
-      rect:
-        serializedVersion: 2
-        x: 56
-        y: 77
-        width: 8
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a9c83db2dbee0b070800000000000000
-      internalID: 8120252624400518298
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: rennet 1_9
-      rect:
-        serializedVersion: 2
-        x: 14
-        y: 65
-        width: 13
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e09f5ea979ae78250800000000000000
-      internalID: 5946979769825753358
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: rennet 1_10
-      rect:
-        serializedVersion: 2
-        x: 53
-        y: 63
+        x: 467
+        y: 147
         width: 22
         height: 13
       alignment: 0
@@ -378,8 +340,184 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 04a916a6726a18d30800000000000000
-      internalID: 4432006196527995456
+      spriteID: 1aafc7438a5e52290800000000000000
+      internalID: -7915668259435906399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rennett_new_8
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 142
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6e6efffefe3e7f10800000000000000
+      internalID: 2269320527178788461
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rennett_new_9
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 111
+        width: 14
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78f43266f50704700800000000000000
+      internalID: 522541111812771719
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rennett_new_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 62
+        width: 33
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b70cc9bd2de4c8ec0800000000000000
+      internalID: -3563386537622323077
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rennett_new_11
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 67
+        width: 26
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ddc55169721d5230800000000000000
+      internalID: 3629077187263843796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rennett_new_12
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 63
+        width: 18
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 129c2024ce3da0810800000000000000
+      internalID: 1732430018350598433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rennett_new_13
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 45
+        width: 14
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34b0dba3252363b40800000000000000
+      internalID: 5419574530341145411
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rennett_new_14
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 46
+        width: 9
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 876fc3a21f00d8ef0800000000000000
+      internalID: -104426180563896712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rennett_new_15
+      rect:
+        serializedVersion: 2
+        x: 281
+        y: 49
+        width: 12
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 200baca50c615c8d0800000000000000
+      internalID: -2826828175692353534
       vertices: []
       indices: 
       edges: []
@@ -388,7 +526,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -398,17 +536,22 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      rennet 1_0: -106186790018914573
-      rennet 1_1: -2278569420408582969
-      rennet 1_10: 4432006196527995456
-      rennet 1_2: 7057853919723989936
-      rennet 1_3: -7119776898744964311
-      rennet 1_4: -1274083252603184325
-      rennet 1_5: 3005672196494050779
-      rennet 1_6: -6101657922281210741
-      rennet 1_7: 1474750454695150427
-      rennet 1_8: 8120252624400518298
-      rennet 1_9: 5946979769825753358
+      rennett_new_0: 7129097742379047179
+      rennett_new_1: 4038912618474627898
+      rennett_new_10: -3563386537622323077
+      rennett_new_11: 3629077187263843796
+      rennett_new_12: 1732430018350598433
+      rennett_new_13: 5419574530341145411
+      rennett_new_14: -104426180563896712
+      rennett_new_15: -2826828175692353534
+      rennett_new_2: 2457708492907386803
+      rennett_new_3: -5922960456083660629
+      rennett_new_4: -8556194589286245426
+      rennett_new_5: 2034973616469963841
+      rennett_new_6: -8512101161996972437
+      rennett_new_7: -7915668259435906399
+      rennett_new_8: 2269320527178788461
+      rennett_new_9: 522541111812771719
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
