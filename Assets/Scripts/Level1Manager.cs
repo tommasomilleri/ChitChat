@@ -6,8 +6,8 @@ public class LevelManager : MonoBehaviour
     public int correctImage;
     public int wrongAnswerPenalty = 20;
 
-    public GameObject Lvl2;
-    public GameObject Lvl1;
+    public GameObject NextLevel;
+    public GameObject CurrentLevel;
     public GameObject canvas;
 
     // Triggered by the UI Buttons
@@ -36,16 +36,16 @@ public class LevelManager : MonoBehaviour
 
     void GoToNextLevel()
     {
-        if (Lvl2 != null && canvas != null)
+        if (NextLevel != null && canvas != null)
         {
-            var newLevel = Instantiate(Lvl2);
+            var newLevel = Instantiate(NextLevel);
             // Passing 'false' prevents the UI from scaling weirdly when parented
             newLevel.transform.SetParent(canvas.transform, false);
         }
 
-        if (Lvl1 != null)
+        if (CurrentLevel != null)
         {
-            Destroy(Lvl1);
+            Destroy(CurrentLevel);
         }
     }
 }
