@@ -4,9 +4,13 @@ using UnityEngine.EventSystems;
 
 public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler
 {
+    [Header("Visual Settings")]
+    public Gradient gradient;
+    [Tooltip("Drag the 'Fill' Image of the Slider here")]
+    public Image fillImage; // Reference to the actual color part of the slider
 
     public GameObject NextLevel;
-    public GameObject CurrentLevel; 
+    public GameObject CurrentLevel;
     public GameObject canvas;
     public Slider thermometerSlider;
     public GameObject foam;
@@ -18,14 +22,21 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler
     private float timer = 0f;
     private float checkTimer = 0f;
     public float checkDuration = 1f;
-    public float timeLimit = 10f; 
+    public float timeLimit = 10f;
     public float temperatureStep = 32f;
     public int winsneeded = 5;
     private int currentwins = 0;
+
     [Header("Rotation & Temperature Settings")]
     [Tooltip("Degrees of visual rotation for each single click")]
     public float rotationStep = 15f;
     private bool levelCompleted = false;
+
+    void Start()
+    {
+        // Set the initial color based on the starting temperature
+        UpdateGradientColor();
+    }
 
     void increasestage()
     {
@@ -34,7 +45,9 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler
             tempstage++;
             thermometerSlider.value += temperatureStep;
             transform.Rotate(0f, 0f, -rotationStep);
-        
+
+            // Update the color when temperature increases
+            UpdateGradientColor();
         }
     }
 
@@ -45,6 +58,21 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler
             tempstage--;
             thermometerSlider.value -= temperatureStep;
             transform.Rotate(0f, 0f, rotationStep);
+
+            // Update the color when temperature decreases
+            UpdateGradientColor();
+        }
+    }
+
+    // --- NEW FUNCTION ---
+    void UpdateGradientColor()
+    {
+        // Safety check to prevent errors if elements are missing
+        if (fillImage != null && thermometerSlider != null)
+        {
+            // normalizedValue converts the slider's value (e.g., 0 to 100) into a perfect 0.0 to 1.0 range
+            // Evaluate() picks the exact color on the gradient at that specific point
+            fillImage.color = gradient.Evaluate(thermometerSlider.normalizedValue);
         }
     }
 
@@ -57,8 +85,6 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler
 
     void updatepotgraphic()
     {
-        // Update the pot graphic based on the potstate
-        // This is a placeholder; implement your own logic to change the pot's appearance
         Debug.Log("Updating pot graphic for state: " + potstate);
 
         if (potstate == 2)
@@ -83,14 +109,11 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler
         if (potstate == tempstage)
         {
             goaltemp = 2;
-
         }
-
         else if (potstate == tempstage + 1 || potstate == tempstage - 2)
         {
             goaltemp = 1;
         }
-
         else
         {
             goaltemp = 0;
@@ -102,7 +125,8 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler
         timer += Time.deltaTime;
         checkTimer += Time.deltaTime;
 
-        if (checkTimer >= checkDuration) {
+        if (checkTimer >= checkDuration)
+        {
             check.SetActive(false);
         }
 
@@ -132,19 +156,14 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler
         }
     }
 
-
-
     public void OnPointerClick(PointerEventData eventData)
     {
-        // Ignore clicks if the target has already been reached
         if (levelCompleted) return;
 
-        // LEFT CLICK: Turn left -> DECREASE temperature and counter
         if (eventData.button == PointerEventData.InputButton.Left)
         {
             decreasestage();
         }
-        // RIGHT CLICK: Turn right -> INCREASE temperature and counter
         else if (eventData.button == PointerEventData.InputButton.Right)
         {
             increasestage();
@@ -164,7 +183,8 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler
             Destroy(CurrentLevel);
         }
 
+        // Reset the cursor safely before moving on
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-        Cursor.visible = true; 
+        Cursor.visible = true;
     }
 }

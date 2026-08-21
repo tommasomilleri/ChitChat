@@ -4,7 +4,6 @@ using UnityEngine.UI;
 public class QualityBar : MonoBehaviour
 {
     public Slider slider;
-
     public void SetMaxQuality(int maxQuality)
     {
         slider.maxValue = maxQuality;
