@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 56fab19611b26494eb5fb24cd0070445
+guid: 6232dc0c6311a44b09cfcf450faea6c2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -600295992682225881
-    second: Cow_female_black_white_0
+      213: 7419066384402825079
+    second: updatepress_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -97,7 +97,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: WindowsStoreApps
+    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Cow_female_black_white_0
+      name: updatepress_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 2700
-        height: 1803
+        x: 102
+        y: 90
+        width: 359
+        height: 277
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 72fd514a9f15ba7f0800000000000000
-      internalID: -600295992682225881
+      spriteID: 77f3f579191d5f660800000000000000
+      internalID: 7419066384402825079
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Cow_female_black_white_0: -600295992682225881
+      updatepress_0: 7419066384402825079
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
