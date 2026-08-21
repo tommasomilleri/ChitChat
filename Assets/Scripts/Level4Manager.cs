@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class Level4Manager : MonoBehaviour
 {
+    public GameObject NextLevel;
+    public GameObject CurrentLevel; 
+    public GameObject canvas;
     private string[] correctSequence =
     {
         "drain",
@@ -47,5 +50,20 @@ public class Level4Manager : MonoBehaviour
     void LevelComplete()
     {
         Debug.Log("LEVEL 4 COMPLETE!");
+    }
+    void GoToNextLevel()
+    {
+        if (NextLevel != null && canvas != null)
+        {
+            var newLevel = Instantiate(NextLevel);
+
+            // Passing 'false' prevents the UI from scaling weirdly when parented
+            newLevel.transform.SetParent(canvas.transform, false);
+        }
+
+        if (CurrentLevel != null)
+        {
+            Destroy(CurrentLevel);
+        }
     }
 }
