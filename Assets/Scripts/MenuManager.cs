@@ -1,3 +1,7 @@
+using System;
+using System.IO;
+
+
 using UnityEngine;
 
 public class MenuManager : MonoBehaviour
@@ -55,10 +59,14 @@ public class MenuManager : MonoBehaviour
         Lvl1.SetActive(true);
     }
 
-    void OpenPlayer1PDF()
+  void OpenPlayer1PDF()
     {
-        // We will add the PDF code here
-        Debug.Log("Open Player 1 PDF");
+        string pdfPath =
+            Path.Combine(Application.streamingAssetsPath, "ChitRecipe.pdf");
+
+        string pdfURL = new Uri(pdfPath).AbsoluteUri;
+
+        Application.OpenURL(pdfURL);
     }
 
     // EXIT BUTTON
