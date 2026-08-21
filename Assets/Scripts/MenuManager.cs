@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class MenuManager : MonoBehaviour
 {
+    public GameObject NextLevel;
+    public GameObject CurrentLevel;
+    public GameObject canvas;
     public GameObject StartPage;
     public GameObject StoryPage;
     public GameObject TutorialPage;
@@ -75,5 +78,20 @@ public class MenuManager : MonoBehaviour
         Debug.Log("Exit game");
 
         Application.Quit();
+    }
+    void GoToNextLevel()
+    {
+        if (NextLevel != null && canvas != null)
+        {
+            var newLevel = Instantiate(NextLevel);
+
+            // Passing 'false' prevents the UI from scaling weirdly when parented
+            newLevel.transform.SetParent(canvas.transform, false);
+        }
+
+        if (CurrentLevel != null)
+        {
+            Destroy(CurrentLevel);
+        }
     }
 }

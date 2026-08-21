@@ -688,6 +688,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7f92d559a68f0d45a2582483f814810, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QualityBar
+--- !u!1 &977456348 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6918506420854719531, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+  m_PrefabInstance: {fileID: 2905204187851996418}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &977456353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 977456348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 681c24c95792b4d42b188db8617d2582, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuManager
+  NextLevel: {fileID: 3577371427033496080, guid: a8f3ff941a3ea0d478be1ae199723ce9, type: 3}
+  CurrentLevel: {fileID: 8757650482270008104}
+  canvas: {fileID: 172658393}
+  StartPage: {fileID: 0}
+  StoryPage: {fileID: 0}
+  TutorialPage: {fileID: 0}
+  PlayerSelectPage: {fileID: 0}
+  Lvl1: {fileID: 0}
 --- !u!1 &1323403789 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5497690163910090968, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
@@ -1160,7 +1185,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2433312096543213357, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2517140174556330245, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1451350130}
+    - target: {fileID: 2517140174556330245, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SelectPlayer2
       objectReference: {fileID: 0}
     - target: {fileID: 2773045658021115319, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
       propertyPath: yOffset
@@ -1178,6 +1211,14 @@ PrefabInstance:
       propertyPath: 'shelves.Array.data[0]'
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 3888981033887928121, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1451350130}
+    - target: {fileID: 3888981033887928121, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: GoToPlayerSelection
+      objectReference: {fileID: 0}
     - target: {fileID: 3959113576141173518, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
       propertyPath: m_Name
       value: Canvas
@@ -1193,6 +1234,58 @@ PrefabInstance:
     - target: {fileID: 4331657887504219871, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -74
+      objectReference: {fileID: 0}
+    - target: {fileID: 4538609068562411866, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_text
+      value: "Legend has it that those who control the cheese control the world.
+        For many years now humans have controlled the cheese. Rats were forced to
+        depend on the humans for cheese. \r\n\r\nRecently, Queen Rat made a discovery\u2013
+        a human recipe book. She has tasked you and your brother to discover this
+        recipe book. Maybe if you learn this recipe, you can free the rats.\r\n"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4538609068562411866, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_fontSize
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 4538609068562411866, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_margin.z
+      value: 31.32251
+      objectReference: {fileID: 0}
+    - target: {fileID: 4538609068562411866, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_fontColor.b
+      value: 0.07450981
+      objectReference: {fileID: 0}
+    - target: {fileID: 4538609068562411866, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_fontColor.g
+      value: 0.2705882
+      objectReference: {fileID: 0}
+    - target: {fileID: 4538609068562411866, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_fontColor.r
+      value: 0.5450981
+      objectReference: {fileID: 0}
+    - target: {fileID: 4538609068562411866, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 4538609068562411866, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4279453067
+      objectReference: {fileID: 0}
+    - target: {fileID: 4538609068562411866, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: 93368250
+      objectReference: {fileID: 0}
+    - target: {fileID: 5235857518249032714, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 253.37
+      objectReference: {fileID: 0}
+    - target: {fileID: 5235857518249032714, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -428.32
+      objectReference: {fileID: 0}
+    - target: {fileID: 5235857518249032714, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 209
       objectReference: {fileID: 0}
     - target: {fileID: 5497690163910090968, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
       propertyPath: m_IsActive
@@ -1218,6 +1311,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 534810882}
+    - target: {fileID: 6720213939863020216, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6981832024938382172, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -1312,12 +1409,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9039875418237888098, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 7812658986601417918, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+    - {fileID: 1964876677735041269, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+    - {fileID: 522659441537202343, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6918506420854719531, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 977456353}
   m_SourcePrefab: {fileID: 100100000, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
 --- !u!1 &2906597098479733394 stripped
 GameObject:

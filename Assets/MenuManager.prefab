@@ -44,8 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 681c24c95792b4d42b188db8617d2582, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuManager
-  StartPage: {fileID: 0}
-  StoryPage: {fileID: 0}
-  TutorialPage: {fileID: 0}
-  PlayerSelectPage: {fileID: 0}
-  Lvl1: {fileID: 0}
+  StartPage: {fileID: 2276168706531579088, guid: 10b42ceb8e444b143bae7b1058af7f82, type: 3}
+  StoryPage: {fileID: 4856313883006072047, guid: e816c4a9c3329b54bba2ccb62e2ff575, type: 3}
+  TutorialPage: {fileID: 78684981381400913, guid: 19e62363110dcd34ca82919a1196ca55, type: 3}
+  PlayerSelectPage: {fileID: 2078572093478416420, guid: 89fa7327658aeda489b021713d8f8b7e, type: 3}
+  Lvl1: {fileID: 3577371427033496080, guid: a8f3ff941a3ea0d478be1ae199723ce9, type: 3}
