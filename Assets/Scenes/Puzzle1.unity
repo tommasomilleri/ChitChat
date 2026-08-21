@@ -235,9 +235,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   maxQuality: 100
   currentQuality: 0
-  highQualityScene: EndingHigh
-  mediumQualityScene: EndingMedium
-  lowQualityScene: EndingLow
+  endingSceneName: EndingScene
 --- !u!4 &427201695
 Transform:
   m_ObjectHideFlags: 0
@@ -788,8 +786,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -400.7821, y: -421.22067}
-  m_SizeDelta: {x: 175.2758, y: 181.5587}
+  m_AnchoredPosition: {x: -411.35794, y: -556.02795}
+  m_SizeDelta: {x: 296.1034, y: 296.1034}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &843441587
 MonoBehaviour:
@@ -811,7 +809,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 5e68fcf02e0089e00b1d4bfba2a91c71, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1379,7 +1377,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 960073669378081173, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -233
+      value: 135.84
       objectReference: {fileID: 0}
     - target: {fileID: 960073669378081173, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1503,7 +1501,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2433312096543213357, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2773045658021115319, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
       propertyPath: yOffset
@@ -1655,7 +1653,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9039875418237888098, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
