@@ -153,12 +153,9 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler
 
     void GoToNextLevel()
     {
-
         if (NextLevel != null && canvas != null)
         {
             var newLevel = Instantiate(NextLevel);
-
-            // Passing 'false' prevents the UI from scaling weirdly when parented
             newLevel.transform.SetParent(canvas.transform, false);
         }
 
@@ -166,7 +163,8 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler
         {
             Destroy(CurrentLevel);
         }
-        //Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-        //Cursor.visible = true;
+
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        Cursor.visible = true; 
     }
 }

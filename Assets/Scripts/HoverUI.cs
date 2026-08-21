@@ -17,5 +17,9 @@ public class HoverUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
     }
+    void OnDisable()
+    {
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+    }
 
 }
