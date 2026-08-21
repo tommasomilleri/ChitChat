@@ -203,7 +203,7 @@ GameObject:
   - component: {fileID: 7766365114998657292}
   - component: {fileID: 3330409456960128401}
   - component: {fileID: 2917093822922169874}
-  - component: {fileID: 8217730521237742787}
+  - component: {fileID: 4162124919662319623}
   m_Layer: 5
   m_Name: press
   m_TagString: Untagged
@@ -312,19 +312,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2039124035747387700}
-        m_TargetAssemblyTypeName: Level4Manager, Assembly-CSharp
-        m_MethodName: ClickProcess
-        m_Mode: 5
+      - m_Target: {fileID: 4162124919662319623}
+        m_TargetAssemblyTypeName: rotateObjectScript, Assembly-CSharp
+        m_MethodName: flipObject
+        m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: press
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &8217730521237742787
+--- !u!114 &4162124919662319623
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -333,10 +333,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4873505347976801131}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03e93c2a064a6eb49ae8fc0bc7cde37d, type: 3}
+  m_Script: {fileID: 11500000, guid: 7737a7bd66d6d385993e436a8d25296b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RotateKnobMouseButtons
-  rotationStep: 15
+  m_EditorClassIdentifier: '::'
 --- !u!1 &6168106563435620186
 GameObject:
   m_ObjectHideFlags: 0
@@ -349,7 +348,6 @@ GameObject:
   - component: {fileID: 4525793202388899652}
   - component: {fileID: 2425009975632141369}
   - component: {fileID: 3932841336584347002}
-  - component: {fileID: 5928104300858745297}
   m_Layer: 5
   m_Name: drain
   m_TagString: Untagged
@@ -470,19 +468,6 @@ MonoBehaviour:
           m_StringArgument: drain
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &5928104300858745297
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6168106563435620186}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03e93c2a064a6eb49ae8fc0bc7cde37d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RotateKnobMouseButtons
-  rotationStep: 15
 --- !u!1 &6198881021531680302
 GameObject:
   m_ObjectHideFlags: 0
@@ -495,7 +480,7 @@ GameObject:
   - component: {fileID: 6043925986154737125}
   - component: {fileID: 7573335653047246690}
   - component: {fileID: 7289852530799043909}
-  - component: {fileID: 5032932423030883081}
+  - component: {fileID: 643713077215282015}
   m_Layer: 5
   m_Name: flip
   m_TagString: Untagged
@@ -616,7 +601,19 @@ MonoBehaviour:
           m_StringArgument: flip
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &5032932423030883081
+      - m_Target: {fileID: 643713077215282015}
+        m_TargetAssemblyTypeName: rotateObjectScript, Assembly-CSharp
+        m_MethodName: flipObject
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 90
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &643713077215282015
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -625,10 +622,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6198881021531680302}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03e93c2a064a6eb49ae8fc0bc7cde37d, type: 3}
+  m_Script: {fileID: 11500000, guid: 7737a7bd66d6d385993e436a8d25296b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RotateKnobMouseButtons
-  rotationStep: 15
+  m_EditorClassIdentifier: Assembly-CSharp::rotateObjectScript
 --- !u!1 &8471157390676921346
 GameObject:
   m_ObjectHideFlags: 0
