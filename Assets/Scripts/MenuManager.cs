@@ -1,97 +1,99 @@
 using System;
 using System.IO;
-
-
 using UnityEngine;
 
 public class MenuManager : MonoBehaviour
 {
-    public GameObject NextLevel;
-    public GameObject CurrentLevel;
-    public GameObject canvas;
+    [Header("UI Pages")]
     public GameObject StartPage;
     public GameObject StoryPage;
     public GameObject TutorialPage;
     public GameObject PlayerSelectPage;
 
+    [Header("Levels")]
     public GameObject Lvl1;
 
     // START BUTTON
     public void StartGame()
     {
-        StartPage.SetActive(false);
-        StoryPage.SetActive(true);
+        if (StartPage != null) StartPage.SetActive(false);
+        if (StoryPage != null) StoryPage.SetActive(true);
     }
 
     // NEXT BUTTON ON STORY PAGE
     public void GoToPlayerSelection()
     {
-        StoryPage.SetActive(false);
-        PlayerSelectPage.SetActive(true);
+        if (StoryPage != null) StoryPage.SetActive(false);
+        if (PlayerSelectPage != null) PlayerSelectPage.SetActive(true);
     }
 
     // TUTORIAL BUTTON
     public void OpenTutorial()
     {
-        StartPage.SetActive(false);
-        TutorialPage.SetActive(true);
+        if (StartPage != null) StartPage.SetActive(false);
+        if (TutorialPage != null) TutorialPage.SetActive(true);
     }
 
     // BACK BUTTON ON TUTORIAL
     public void BackToStart()
     {
-        TutorialPage.SetActive(false);
-        StartPage.SetActive(true);
+        if (TutorialPage != null) TutorialPage.SetActive(false);
+        if (StartPage != null) StartPage.SetActive(true);
     }
 
-    // PLAYER 1
+    // PLAYER 1 (The Reader)
     public void SelectPlayer1()
     {
-        Debug.Log("Player 1 selected");
+        Debug.Log("Player 1 (Reader) selected. Opening PDF...");
 
         OpenPlayer1PDF();
+
+        // IMPORTANT: We deliberately DO NOT hide the PlayerSelectPage here!
+        // This way, players on the same PC can open the manual first, 
+        // and the menu stays visible so they can then click Player 2 to start the game.
     }
 
-    // PLAYER 2
+    // PLAYER 2 (The Chef)
     public void SelectPlayer2()
     {
-        Debug.Log("Player 2 selected");
+        Debug.Log("Player 2 (Chef) selected. Starting Level 1...");
 
-        PlayerSelectPage.SetActive(false);
+        if (PlayerSelectPage != null)
+        {
+            PlayerSelectPage.SetActive(false); // Hides the menu only when the game actually starts
+        }
 
-        Lvl1.SetActive(true);
+        if (Lvl1 != null)
+        {
+            Lvl1.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning("Lvl1 is missing! Drag it into the MenuManager Inspector.");
+        }
     }
 
-  void OpenPlayer1PDF()
+    void OpenPlayer1PDF()
     {
-        string pdfPath =
-            Path.Combine(Application.streamingAssetsPath, "ChitRecipe.pdf");
+        try
+        {
+            // Makes sure the path works perfectly regardless of the operating system
+            string pdfPath = Path.Combine(Application.streamingAssetsPath, "ChitRecipe.pdf");
+            string pdfURL = new Uri(pdfPath).AbsoluteUri;
 
-        string pdfURL = new Uri(pdfPath).AbsoluteUri;
-
-        Application.OpenURL(pdfURL);
+            Application.OpenURL(pdfURL);
+        }
+        catch (Exception e)
+        {
+            // If the PDF is missing or fails to open, it logs the error without crashing the game
+            Debug.LogError("Failed to open the PDF recipe! Error: " + e.Message);
+        }
     }
 
     // EXIT BUTTON
     public void ExitGame()
     {
-        Debug.Log("Exit game");
-
+        Debug.Log("Exiting game...");
         Application.Quit();
-    }
-    void GoToNextLevel()
-    {
-        if (NextLevel != null && canvas != null)
-        {
-            var newLevel = Instantiate(NextLevel);
-
-            // Passing 'false' prevents the UI from scaling weirdly when parented
-            newLevel.transform.SetParent(canvas.transform, false);
-        }
-
-        if (CurrentLevel != null)
-        {
-            Destroy(CurrentLevel);
-        }
     }
 }

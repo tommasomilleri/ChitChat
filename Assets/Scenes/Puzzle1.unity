@@ -859,9 +859,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 681c24c95792b4d42b188db8617d2582, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuManager
-  NextLevel: {fileID: 3577371427033496080, guid: a8f3ff941a3ea0d478be1ae199723ce9, type: 3}
-  CurrentLevel: {fileID: 8757650482270008104}
-  canvas: {fileID: 172658393}
   StartPage: {fileID: 0}
   StoryPage: {fileID: 0}
   TutorialPage: {fileID: 0}
@@ -1690,7 +1687,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4164695094068187079, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4331657887504219871, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -1830,7 +1827,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7145738777464044204, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7149917817524005886, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
       propertyPath: m_SizeDelta.x
