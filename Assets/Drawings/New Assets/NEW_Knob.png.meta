@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 1c9a044ae37a356249140c28bc4d67bb
+guid: 652391f42f359c846bec9fac43f96016
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7496021832108446754
-    second: tempedit_0
+      213: -6253372774273009470
+    second: NEW_Knob_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -97,7 +97,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: WebGL
+    buildTarget: WindowsStoreApps
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: tempedit_0
+      name: NEW_Knob_0
       rect:
         serializedVersion: 2
-        x: 189
-        y: 71
-        width: 188
-        height: 339
+        x: 55
+        y: 58
+        width: 1939
+        height: 1935
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: edb6a9cfbd7c8f790800000000000000
-      internalID: -7496021832108446754
+      spriteID: 2c8bb55f79e8739a0800000000000000
+      internalID: -6253372774273009470
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      tempedit_0: -7496021832108446754
+      NEW_Knob_0: -6253372774273009470
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
