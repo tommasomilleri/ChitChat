@@ -22,14 +22,14 @@ public class LevelManager : MonoBehaviour
         {
             Debug.Log("Oh no! Wrong ingredient, cheese quality drops.");
 
-            // Calls the global singleton manager to decrease the quality
-            if (CheeseQualityManager.Instance != null)
+            // Chiama il GameManager globale invece del CheeseQualityManager!
+            if (GameManager.instance != null)
             {
-                CheeseQualityManager.Instance.DecreaseQuality(wrongAnswerPenalty);
+                GameManager.instance.DecreaseGlobalQuality(wrongAnswerPenalty);
             }
             else
             {
-                Debug.LogWarning("CheeseQualityManager is missing from the scene!");
+                Debug.LogWarning("GameManager is missing from the scene!");
             }
         }
     }

@@ -693,7 +693,9 @@ MonoBehaviour:
   - Rennet
   - Salt
   - Annatto
+  orderText: {fileID: 4811023991161883869}
   NextLevel: {fileID: 1954108728476451342, guid: 7dae68e54b8c3c8489f191817da56b50, type: 3}
   CurrentLevel: {fileID: 8270708888456936495}
-  canvas: {fileID: 0}
-  orderText: {fileID: 4811023991161883869}
+  canvas: {fileID: 3959113576141173518, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+  qualityBar: {fileID: 0}
+  wrongAnswerPenalty: 20

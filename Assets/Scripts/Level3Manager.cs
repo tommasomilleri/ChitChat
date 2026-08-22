@@ -3,34 +3,37 @@ using TMPro;
 
 public class Level3Manager : MonoBehaviour
 {
-    public string[] correctOrder =
-    {
-        "Milk",
-        "Rennet",
-        "Salt",
-        "Annatto"
-    };
+    [Header("Recipe Settings")]
+    public string[] correctOrder = { "Milk", "Rennet", "Salt", "Annatto" };
+    private int currentStep = 0;
+
+    [Header("UI & Level Management")]
+    public TMP_Text orderText;
     public GameObject NextLevel;
     public GameObject CurrentLevel;
     public GameObject canvas;
-    private int currentStep = 0;
 
-    public TMP_Text orderText;
+    [Header("Quality Settings")]
+    public QualityBar qualityBar;
+    public int wrongAnswerPenalty = 20;
 
     void Start()
     {
         UpdateText();
+
+        // Sync the local QualityBar with the global GameManager score at start!
+        if (qualityBar != null && GameManager.instance != null)
+        {
+            qualityBar.SetMaxQuality(GameManager.instance.maxQuality);
+            qualityBar.SetQuality(GameManager.instance.currentQuality);
+        }
     }
 
     public void CheckIngredient(DraggableIngredient ingredient)
     {
-        // Prevents IndexOutOfRangeException if extra ingredients are triggered after level completion
-        if (currentStep >= correctOrder.Length)
-        {
-            return;
-        }
+        // Prevents IndexOutOfRangeException if extra ingredients are triggered
+        if (currentStep >= correctOrder.Length) return;
 
-        // Safety check to prevent NullReferenceException
         if (ingredient == null)
         {
             Debug.LogWarning("No ingredient passed to CheckIngredient!");
@@ -40,12 +43,8 @@ public class Level3Manager : MonoBehaviour
         if (ingredient.ingredientName == correctOrder[currentStep])
         {
             Debug.Log("Correct ingredient!");
-
             currentStep++;
-
-            // Ingredient disappears after being added
             ingredient.gameObject.SetActive(false);
-
             UpdateText();
 
             if (currentStep == correctOrder.Length)
@@ -55,8 +54,28 @@ public class Level3Manager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Wrong ingredient!");
-            // Optional: You can call a function here to reset the wrong ingredient's position
+            Debug.Log("Wrong ingredient! Quality drops.");
+
+            // 1. Decrease global quality
+            if (GameManager.instance != null)
+            {
+                GameManager.instance.DecreaseGlobalQuality(wrongAnswerPenalty);
+
+                // 2. Update the local UI bar
+                if (qualityBar != null)
+                {
+                    qualityBar.SetQuality(GameManager.instance.currentQuality);
+                }
+
+                // 3. Trigger immediate ending if quality hits zero
+                if (GameManager.instance.currentQuality <= 0)
+                {
+                    Debug.Log("Quality hit zero! Triggering ending scene.");
+                    GameManager.instance.TriggerEnding();
+                }
+            }
+
+            // Note: You can add logic here to snap the ingredient back to its starting position!
         }
     }
 
@@ -64,7 +83,6 @@ public class Level3Manager : MonoBehaviour
     {
         if (orderText != null)
         {
-            // Replaced the hardcoded "4" with correctOrder.Length to make the code dynamic
             orderText.text = "Added: " + currentStep + " / " + correctOrder.Length;
         }
         else
@@ -77,7 +95,6 @@ public class Level3Manager : MonoBehaviour
     {
         Debug.Log("LEVEL 3 COMPLETE!");
         GoToNextLevel();
-        // Logic to load the next level or show the victory menu will go here
     }
 
     void GoToNextLevel()
@@ -85,7 +102,6 @@ public class Level3Manager : MonoBehaviour
         if (NextLevel != null && canvas != null)
         {
             var newLevel = Instantiate(NextLevel);
-            // Passing 'false' prevents the UI from scaling weirdly when parented
             newLevel.transform.SetParent(canvas.transform, false);
         }
 

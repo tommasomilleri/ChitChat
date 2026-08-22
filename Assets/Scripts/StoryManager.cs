@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,9 +8,11 @@ public class GameManager : MonoBehaviour
     public int maxQuality = 100;
     public int currentQuality;
 
+    [Tooltip("Drag the QualityBar UI object here just ONCE!")]
+    public QualityBar globalQualityBar; // Riferimento alla tua barra UI
+
     [Header("Story Endings Settings")]
-    [Tooltip("The exact name of your SINGLE ending scene")]
-    public string endingSceneName = "EndingScene";
+    public GameObject endingPanel;
 
     void Awake()
     {
@@ -27,18 +28,51 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        // All'inizio del gioco, imposta la barra al massimo!
+        if (globalQualityBar != null)
+        {
+            globalQualityBar.SetMaxQuality(maxQuality);
+            globalQualityBar.SetQuality(currentQuality);
+        }
+    }
+
     public void DecreaseGlobalQuality(int damage)
     {
         currentQuality -= damage;
-        if (currentQuality < 0) currentQuality = 0;
 
-        Debug.Log("Global Quality is now: " + currentQuality);
+        if (currentQuality <= 0)
+        {
+            currentQuality = 0;
+            Debug.Log("Quality hit zero! Instant Bad Ending!");
+            TriggerEnding();
+
+            // --- LA NUOVA RIGA: Spegne (nasconde) l'oggetto UI della barra ---
+            if (globalQualityBar != null)
+            {
+                globalQualityBar.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            Debug.Log("Global Quality is now: " + currentQuality);
+
+            // Aggiorna la barra solo se abbiamo ancora punti
+            if (globalQualityBar != null)
+            {
+                globalQualityBar.SetQuality(currentQuality);
+            }
+        }
     }
 
-    // Call this exactly when the final level is completed!
     public void TriggerEnding()
     {
-        Debug.Log("Triggering Ending Scene. Final Quality: " + currentQuality);
-        SceneManager.LoadScene(endingSceneName);
+        Debug.Log("Triggering Ending Panel. Final Quality: " + currentQuality);
+
+        if (endingPanel != null)
+        {
+            endingPanel.SetActive(true);
+        }
     }
 }
