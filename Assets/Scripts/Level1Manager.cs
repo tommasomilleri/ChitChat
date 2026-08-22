@@ -10,6 +10,14 @@ public class LevelManager : MonoBehaviour
     public GameObject CurrentLevel;
     public GameObject canvas;
 
+    void Start()
+    {
+        // AGGIUNGI QUESTA RIGA: Riaccende la barra nel Livello 1
+        if (GameManager.instance != null && GameManager.instance.globalQualityBar != null)
+        {
+            GameManager.instance.globalQualityBar.gameObject.SetActive(true);
+        }
+    }
     // Triggered by the UI Buttons
     public void selectImage(int imageNumber)
     {

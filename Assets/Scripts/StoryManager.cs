@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 
     [Tooltip("Drag the QualityBar UI object here just ONCE!")]
     public QualityBar globalQualityBar; // Riferimento alla tua barra UI
+    public GameObject qualityBarContainer; // AGGIUNGI QUESTA RIGA!
 
     [Header("Story Endings Settings")]
     public GameObject endingPanel;
@@ -35,6 +36,7 @@ public class GameManager : MonoBehaviour
         {
             globalQualityBar.SetMaxQuality(maxQuality);
             globalQualityBar.SetQuality(currentQuality);
+            globalQualityBar.gameObject.SetActive(false);
         }
     }
 
@@ -73,6 +75,11 @@ public class GameManager : MonoBehaviour
         if (endingPanel != null)
         {
             endingPanel.SetActive(true);
+        }
+
+        if (qualityBarContainer != null)
+        {
+            qualityBarContainer.SetActive(false);
         }
     }
 }
