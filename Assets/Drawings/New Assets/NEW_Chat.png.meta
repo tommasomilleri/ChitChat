@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7f2e69e4525ef5caeb7ec3b9d22938c2
+guid: 4892393f59ebaf64591fac4242fec3a8
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4199204927252948060
-    second: drain_0
+      213: 843791890576738600
+    second: NEW_Chat_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -97,7 +97,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: WebGL
+    buildTarget: WindowsStoreApps
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: drain_0
+      name: NEW_Chat_0
       rect:
         serializedVersion: 2
-        x: 52
-        y: 34
-        width: 433
-        height: 391
+        x: 305
+        y: 15
+        width: 1536
+        height: 1899
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4ab9404fd5d69b5c0800000000000000
-      internalID: -4199204927252948060
+      spriteID: 8298e2ef040c5bb00800000000000000
+      internalID: 843791890576738600
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      drain_0: -4199204927252948060
+      NEW_Chat_0: 843791890576738600
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
