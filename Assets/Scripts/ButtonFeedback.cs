@@ -1,59 +1,126 @@
 using UnityEngine;
-using UnityEngine.EventSystems; // Fondamentale per rilevare l'Hover e il Click sulla UI!
+using UnityEngine.EventSystems;
 
-public class ButtonFeedback : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
+public class ButtonFeedback : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
 {
     [Header("Audio Settings")]
-    [Tooltip("L'AudioSource che suonerà i file. Può essere attaccato a questo bottone o al GameManager.")]
     public AudioSource audioSource;
-
-    [Tooltip("Il suono di HOVER (quando la freccina entra nel bottone)")]
     public AudioClip hoverSound;
-
-    [Tooltip("Il suono di CLICK (quando clicchi il bottone)")]
     public AudioClip clickSound;
-
-    [Header("Randomizzazione (Anti-Noia)")]
-    [Tooltip("Pitch minimo (es. 0.9 = leggermente più grave)")]
     public float minPitch = 0.9f;
-    [Tooltip("Pitch massimo (es. 1.1 = leggermente più acuto)")]
     public float maxPitch = 1.1f;
 
+    [Header("Physical Press Effect")]
+    [Tooltip("Quanti pixel il bottone va in giù quando premuto (es. -8)")]
+    public float pushDownOffset = -8f;
+    [Tooltip("Quanto si restringe (1 = normale, 0.95 = leggermente più piccolo)")]
+    public float pressScale = 0.95f;
+
+    [Header("Hover Rotation Effect (Opzionale)")]
+    [Tooltip("L'icona da far ruotare (es. l'ingranaggio). Lascia vuoto se non c'è nulla da ruotare.")]
+    public Transform iconToRotate;
+    [Tooltip("Di quanti gradi deve ruotare quando ci passi sopra col mouse")]
+    public float hoverRotationAngle = 45f;
+    [Tooltip("Velocità dell'animazione di rotazione")]
+    public float rotationSpeed = 10f;
+
     [Header("VFX Settings")]
-    [Tooltip("Il prefabbricato (es. polvere o stelline) da far spawnare al click")]
     public GameObject clickVFXPrefab;
 
-    // 1. Questa funzione scatta in automatico appena il mouse PASSA SOPRA il bottone (Hover)
+    // Variabili di memoria
+    private Vector2 originalPosition;
+    private Vector3 originalScale;
+    private RectTransform rectTransform;
+    private Quaternion originalIconRotation;
+    private bool isHovering = false;
+
+    void Start()
+    {
+        rectTransform = GetComponent<RectTransform>();
+
+        // Salva le posizioni iniziali
+        if (rectTransform != null)
+        {
+            originalPosition = rectTransform.anchoredPosition;
+            originalScale = transform.localScale;
+        }
+
+        if (iconToRotate != null)
+        {
+            originalIconRotation = iconToRotate.localRotation;
+        }
+    }
+
+    void Update()
+    {
+        // Gestisce la rotazione fluida se è stata assegnata un'icona
+        if (iconToRotate != null)
+        {
+            Quaternion targetRotation = isHovering
+                ? originalIconRotation * Quaternion.Euler(0, 0, hoverRotationAngle)
+                : originalIconRotation;
+
+            // Usiamo unscaledDeltaTime così gira anche se il gioco è in pausa!
+            iconToRotate.localRotation = Quaternion.Lerp(iconToRotate.localRotation, targetRotation, Time.unscaledDeltaTime * rotationSpeed);
+        }
+    }
+
+    // 1. Mouse entra
     public void OnPointerEnter(PointerEventData eventData)
     {
+        isHovering = true;
         PlaySoundWithRandomPitch(hoverSound);
     }
 
-    // 2. Questa funzione scatta in automatico quando CLICCHI il bottone
+    // 2. Mouse esce
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        isHovering = false;
+
+        // Se il giocatore preme ma sposta il mouse fuori dal bottone, resetta la posizione fisica per sicurezza
+        if (rectTransform != null)
+        {
+            rectTransform.anchoredPosition = originalPosition;
+            transform.localScale = originalScale;
+        }
+    }
+
+    // 3. Click premuto (scende fisicamente)
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (rectTransform != null)
+        {
+            rectTransform.anchoredPosition = new Vector2(originalPosition.x, originalPosition.y + pushDownOffset);
+            transform.localScale = originalScale * pressScale;
+        }
+    }
+
+    // 4. Click rilasciato (torna su)
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (rectTransform != null)
+        {
+            rectTransform.anchoredPosition = originalPosition;
+            transform.localScale = originalScale;
+        }
+    }
+
+    // 5. Click completo registrato
     public void OnPointerClick(PointerEventData eventData)
     {
         PlaySoundWithRandomPitch(clickSound);
         SpawnVFX();
     }
 
-    // Funzione interna che randomizza il pitch e suona la clip
     private void PlaySoundWithRandomPitch(AudioClip clip)
     {
         if (audioSource != null && clip != null)
         {
-            // Cambia il pitch scegliendo un valore a caso tra min e max
             audioSource.pitch = Random.Range(minPitch, maxPitch);
-
-            // Riproduce il suono sovrapponendolo ad altri eventuali suoni
             audioSource.PlayOneShot(clip);
-        }
-        else if (clip != null && audioSource == null)
-        {
-            Debug.LogWarning("Manca l'AudioSource sul bottone: " + gameObject.name);
         }
     }
 
-    // Funzione interna per generare l'effetto visivo
     private void SpawnVFX()
     {
         if (clickVFXPrefab != null)
