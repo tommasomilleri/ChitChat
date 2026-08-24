@@ -23,6 +23,7 @@ public class CheeseQualityManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return; // Interrompe l'esecuzione se questo è un clone da distruggere
         }
     }
 
@@ -30,13 +31,21 @@ public class CheeseQualityManager : MonoBehaviour
     {
         // Initialize the game
         ResetGame();
+
+        // --- LA CORREZIONE FONDAMENTALE ---
+        // Spegne forzatamente l'oggetto (bordo + riempimento) appena avvii il gioco.
+        // Sarà il MenuManager a riaccenderlo con SetActive(true) quando clicchi su Player 2!
+        if (qualityBar != null)
+        {
+            qualityBar.gameObject.SetActive(false);
+        }
     }
 
     public void DecreaseQuality(int damage)
     {
         currentQuality -= damage;
 
-        if (currentQuality < 0)
+        if (currentQuality <= 0) // Meglio usare <= 0 per evitare bug se il danno supera la vita residua
         {
             currentQuality = 0;
         }
@@ -56,6 +65,9 @@ public class CheeseQualityManager : MonoBehaviour
     {
         Debug.Log("The cheese went bad! A Mold Monster is born!");
         // Add your Game Over logic here
+
+        // OPZIONALE: Se vuoi che la barra sparisca quando perdi, togli il commento alla riga sotto
+        // if (qualityBar != null) qualityBar.gameObject.SetActive(false);
     }
 
     public void ResetGame()

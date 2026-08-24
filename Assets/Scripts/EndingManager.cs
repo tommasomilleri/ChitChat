@@ -19,6 +19,11 @@ public class EndingManager : MonoBehaviour
 
     void Start()
     {
+        // Blocca immediatamente il menu di pausa durante la scena finale
+        if (PauseMenuManager.Instance != null)
+        {
+            PauseMenuManager.Instance.canPause = false;
+        }
         // Safety check to ensure the global GameManager exists
         if (GameManager.instance != null)
         {
