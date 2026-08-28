@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class Level3Manager : MonoBehaviour
@@ -7,75 +8,69 @@ public class Level3Manager : MonoBehaviour
     public string[] correctOrder = { "Milk", "Rennet", "Salt", "Annatto" };
     private int currentStep = 0;
 
+    [Header("Pot Visuals")]
+    public Image potImageComponent;
+    public Sprite[] potSprites;
+
     [Header("UI & Level Management")]
     public TMP_Text orderText;
     public GameObject NextLevel;
     public GameObject CurrentLevel;
-    public GameObject canvas;
 
-    [Header("Quality Settings")]
-    public QualityBar qualityBar;
+    [Header("Penalty Settings")]
     public int wrongAnswerPenalty = 20;
 
     void Start()
     {
         UpdateText();
 
-        // Sync the local QualityBar with the global GameManager score at start!
-        if (qualityBar != null && GameManager.instance != null)
+        // Assicura che la pentola inizi vuota
+        if (potImageComponent != null && potSprites.Length > 0)
         {
-            qualityBar.SetMaxQuality(GameManager.instance.maxQuality);
-            qualityBar.SetQuality(GameManager.instance.currentQuality);
+            potImageComponent.sprite = potSprites[0];
         }
     }
 
     public void CheckIngredient(DraggableIngredient ingredient)
     {
-        // Prevents IndexOutOfRangeException if extra ingredients are triggered
         if (currentStep >= correctOrder.Length) return;
+        if (ingredient == null) return;
 
-        if (ingredient == null)
-        {
-            Debug.LogWarning("No ingredient passed to CheckIngredient!");
-            return;
-        }
-
+        // --- SE L'INGREDIENTE È CORRETTO ---
         if (ingredient.ingredientName == correctOrder[currentStep])
         {
             Debug.Log("Correct ingredient!");
+
+            // 1. Aumenta il contatore SOLO se hai indovinato!
             currentStep++;
+
+            // 2. Magia Visiva: aggiorna l'immagine fermandosi al marrone
+            if (potImageComponent != null && potSprites.Length > 0)
+            {
+                int spriteIndex = Mathf.Min(currentStep, potSprites.Length - 1);
+                potImageComponent.sprite = potSprites[spriteIndex];
+            }
+
+            // 3. Fai sparire il barattolo usato e aggiorna il testo
             ingredient.gameObject.SetActive(false);
             UpdateText();
 
+            // 4. Controlla la vittoria
             if (currentStep == correctOrder.Length)
             {
                 LevelComplete();
             }
         }
+        // --- SE L'INGREDIENTE È SBAGLIATO ---
         else
         {
             Debug.Log("Wrong ingredient! Quality drops.");
 
-            // 1. Decrease global quality
+            // Penalizza solo la qualità globale, il barattolo tornerà al suo posto da solo!
             if (GameManager.instance != null)
             {
                 GameManager.instance.DecreaseGlobalQuality(wrongAnswerPenalty);
-
-                // 2. Update the local UI bar
-                if (qualityBar != null)
-                {
-                    qualityBar.SetQuality(GameManager.instance.currentQuality);
-                }
-
-                // 3. Trigger immediate ending if quality hits zero
-                if (GameManager.instance.currentQuality <= 0)
-                {
-                    Debug.Log("Quality hit zero! Triggering ending scene.");
-                    GameManager.instance.TriggerEnding();
-                }
             }
-
-            // Note: You can add logic here to snap the ingredient back to its starting position!
         }
     }
 
@@ -85,29 +80,17 @@ public class Level3Manager : MonoBehaviour
         {
             orderText.text = "Added: " + currentStep + " / " + correctOrder.Length;
         }
-        else
-        {
-            Debug.LogWarning("orderText has not been assigned in the Inspector!");
-        }
     }
 
     void LevelComplete()
     {
-        Debug.Log("LEVEL 3 COMPLETE!");
+        Debug.Log("LEVEL 3 COMPLETE! The cheese is ready for the cellar.");
         GoToNextLevel();
     }
 
     void GoToNextLevel()
     {
-        if (NextLevel != null && canvas != null)
-        {
-            var newLevel = Instantiate(NextLevel);
-            newLevel.transform.SetParent(canvas.transform, false);
-        }
-
-        if (CurrentLevel != null)
-        {
-            Destroy(CurrentLevel);
-        }
+        if (NextLevel != null) NextLevel.SetActive(true);
+        if (CurrentLevel != null) CurrentLevel.SetActive(false);
     }
 }
