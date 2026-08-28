@@ -1,53 +1,76 @@
 using UnityEngine;
+using System.Collections; // Necessario per le Coroutine
 
-// This automatically adds an AudioSource to your GameObject if you forget to!
 [RequireComponent(typeof(AudioSource))]
 public class ProceduralMusicManager : MonoBehaviour
 {
-    // Singleton reference to keep this object alive across levels
     public static ProceduralMusicManager instance;
 
     [Header("Music Settings")]
-    [Tooltip("Drag your .wav or .mp3 background music here")]
+    [Tooltip("Trascina qui il tuo file .wav o .mp3")]
     public AudioClip backgroundTrack;
 
-    // We make this private because the script will find it automatically now
+    [Tooltip("Quanti secondi ci mette la musica ad arrivare al massimo volume? (Fade-In)")]
+    public float fadeInDuration = 4f;
+
+    [Tooltip("Il volume massimo desiderato (da 0 a 1)")]
+    [Range(0f, 1f)]
+    public float targetVolume = 0.4f;
+
     private AudioSource audioSource;
 
     void Awake()
     {
-        // Singleton pattern: ensures the music doesn't stop when changing scenes
+        // Singleton pattern per non interrompere la musica al cambio livello
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject); // Keeps the music alive across all levels!
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(gameObject); // Destroy duplicates on scene reload
+            Destroy(gameObject);
             return;
         }
 
-        // Automatically grab the AudioSource from this GameObject
         audioSource = GetComponent<AudioSource>();
 
-        // Play the track if it has been assigned in the Inspector
         if (backgroundTrack != null)
         {
             audioSource.clip = backgroundTrack;
             audioSource.loop = true;
-            audioSource.playOnAwake = true;
+            audioSource.playOnAwake = false; // Lo gestiamo noi via codice!
 
-            // Start playing only if it isn't playing already
+            // Impostiamo il volume a 0 per preparare il Fade-In
+            audioSource.volume = 0f;
+
             if (!audioSource.isPlaying)
             {
                 audioSource.Play();
+                // Facciamo partire la magia dell'ingresso graduale
+                StartCoroutine(FadeInMusic());
             }
         }
         else
         {
-            // If nothing is heard, this will tell you exactly why in the Console!
-            Debug.LogWarning("MUSIC ERROR: No audio clip found! Please drag a WAV file into the 'Background Track' slot in the Inspector.");
+            Debug.LogWarning("MUSIC ERROR: Nessuna traccia audio inserita!");
         }
+    }
+
+    // Coroutine che alza dolcemente il volume nel tempo
+    IEnumerator FadeInMusic()
+    {
+        float currentTime = 0;
+
+        while (currentTime < fadeInDuration)
+        {
+            currentTime += Time.deltaTime;
+            // Calcola la sfumatura morbida da 0 al volume massimo
+            audioSource.volume = Mathf.Lerp(0f, targetVolume, currentTime / fadeInDuration);
+            yield return null;
+        }
+
+        // Assicuriamoci che arrivi esattamente al volume target alla fine
+        audioSource.volume = targetVolume;
     }
 }

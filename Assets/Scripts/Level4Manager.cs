@@ -1,5 +1,6 @@
 using UnityEngine;
-using System.Collections; // Fondamentale per le Coroutine (animazioni)!
+using UnityEngine.UI;
+using System.Collections;
 
 public class Level4Manager : MonoBehaviour
 {
@@ -15,33 +16,61 @@ public class Level4Manager : MonoBehaviour
     public GameObject CurrentLevel;
 
     [Header("Graphics to Animate")]
-    [Tooltip("Trascina qui l'immagine della Pressa (Rossa)")]
     public RectTransform pressGraphic;
-    [Tooltip("Trascina qui l'immagine del Formaggio (Giallo)")]
     public RectTransform flipGraphic;
-    [Tooltip("Trascina qui l'immagine della Tela (Scolatura)")]
     public RectTransform drainGraphic;
 
-    // Blocco di sicurezza: impedisce di cliccare mentre un'animazione è in corso
+    [Header("Visual Progress (Le 5 Lucine)")]
+    [Tooltip("Inserisci qui le 5 immagini (cerchietti) della UI")]
+    public Image[] progressLights;
+
+    [Tooltip("L'immagine quando il passo è ancora da fare (Es. Goccia vuota)")]
+    public Sprite lightOffSprite;
+    [Tooltip("L'immagine quando il passo è completato (Es. Goccia piena)")]
+    public Sprite lightOnSprite;
+
+    // Vecchi colori usati come salvavita se non metti le immagini
+    public Color lightOffColor = new Color(0.3f, 0.3f, 0.3f);
+    public Color lightOnColor = new Color(1f, 0.8f, 0f);
+
+    [Header("Audio Feedback")]
+    public AudioSource audioSource;
+    public AudioClip successSound;
+    public AudioClip errorSound;
+
     private bool isAnimating = false;
+
+    void Start()
+    {
+        UpdateLights();
+    }
 
     public void ClickProcess(string process)
     {
-        // Se un'animazione è in corso, ignora i nuovi click
         if (isAnimating) return;
+
+        RectTransform clickedGraphic = null;
+        if (process == "press") clickedGraphic = pressGraphic;
+        else if (process == "flip") clickedGraphic = flipGraphic;
+        else if (process == "drain") clickedGraphic = drainGraphic;
 
         // --- AZIONE CORRETTA ---
         if (process == correctSequence[currentStep])
         {
             Debug.Log("Correct: " + process);
             currentStep++;
+            UpdateLights();
 
-            // Lancia l'animazione specifica in base alla parola
-            if (process == "press") StartCoroutine(SquishAnimation(pressGraphic));
-            else if (process == "flip") StartCoroutine(RotateAnimation(flipGraphic));
-            else if (process == "drain") StartCoroutine(VibrateAnimation(drainGraphic));
+            if (audioSource != null && successSound != null)
+            {
+                audioSource.pitch = Random.Range(0.9f, 1.1f);
+                audioSource.PlayOneShot(successSound);
+            }
 
-            // Controlla se l'intera sequenza è finita
+            if (process == "press") StartCoroutine(SquishAnimation(clickedGraphic));
+            else if (process == "flip") StartCoroutine(RotateAnimation(clickedGraphic));
+            else if (process == "drain") StartCoroutine(VibrateAnimation(clickedGraphic));
+
             if (currentStep == correctSequence.Length)
             {
                 StartCoroutine(CompleteLevelRoutine());
@@ -53,10 +82,17 @@ public class Level4Manager : MonoBehaviour
             Debug.Log("Wrong! RESETing sequence.");
             ResetSequence();
 
-            // Sottrae punti alla barra globale usando il GameManager[cite: 1, 4]
+            if (audioSource != null && errorSound != null)
+            {
+                audioSource.pitch = 1f;
+                audioSource.PlayOneShot(errorSound);
+            }
+
+            StartCoroutine(GlobalResetAnimation());
+
             if (GameManager.instance != null)
             {
-                GameManager.instance.DecreaseGlobalQuality(wrongActionPenalty);
+                GameManager.instance.DecreaseGlobalQuality(wrongActionPenalty); //[cite: 1]
             }
         }
     }
@@ -64,11 +100,34 @@ public class Level4Manager : MonoBehaviour
     public void ResetSequence()
     {
         currentStep = 0;
+        UpdateLights();
         Debug.Log("Sequence reset. Try again!");
     }
 
+    // --- LA NUOVA MAGIA DELLE LUCI ---
+    void UpdateLights()
+    {
+        for (int i = 0; i < progressLights.Length; i++)
+        {
+            if (progressLights[i] != null)
+            {
+                // Se hai inserito degli Sprite nell'Inspector, usa quelli!
+                if (lightOnSprite != null && lightOffSprite != null)
+                {
+                    progressLights[i].sprite = (i < currentStep) ? lightOnSprite : lightOffSprite;
+                    progressLights[i].color = Color.white; // Assicura che l'immagine sia visibile e non tinta
+                }
+                else
+                {
+                    // Salvavita: usa i colori se mancano le immagini
+                    progressLights[i].color = (i < currentStep) ? lightOnColor : lightOffColor;
+                }
+            }
+        }
+    }
+
     // ==========================================
-    // LE 3 ANIMAZIONI (COROUTINES)
+    // ANIMAZIONI DI SUCCESSO
     // ==========================================
 
     IEnumerator SquishAnimation(RectTransform target)
@@ -77,11 +136,9 @@ public class Level4Manager : MonoBehaviour
         isAnimating = true;
         Vector3 originalScale = target.localScale;
 
-        // Schiaccia in basso (Y) e allarga (X)
         target.localScale = new Vector3(originalScale.x * 1.15f, originalScale.y * 0.7f, originalScale.z);
-        yield return new WaitForSeconds(0.15f); // Aspetta un istante
+        yield return new WaitForSeconds(0.15f);
 
-        // Rimbalza alla normalità
         target.localScale = originalScale;
         isAnimating = false;
     }
@@ -91,14 +148,13 @@ public class Level4Manager : MonoBehaviour
         if (target == null) yield break;
         isAnimating = true;
 
-        float duration = 0.3f; // Ci mette 0.3 secondi a girare
+        float duration = 0.3f;
         float elapsed = 0f;
         Quaternion startRot = target.localRotation;
-        Quaternion endRot = startRot * Quaternion.Euler(0, 0, -180f); // Ruota di mezzo giro
+        Quaternion endRot = startRot * Quaternion.Euler(0, 0, -180f);
 
         while (elapsed < duration)
         {
-            // Movimento fluido da startRot a endRot
             target.localRotation = Quaternion.Lerp(startRot, endRot, elapsed / duration);
             elapsed += Time.deltaTime;
             yield return null;
@@ -113,19 +169,67 @@ public class Level4Manager : MonoBehaviour
         isAnimating = true;
 
         Vector3 originalPos = target.localPosition;
-        float duration = 0.4f; // Vibra per 0.4 secondi
+        float duration = 0.4f;
         float elapsed = 0f;
 
         while (elapsed < duration)
         {
-            // Sposta il target a caso di pochissimi pixel per simulare lo scuotimento
             target.localPosition = originalPos + new Vector3(Random.Range(-6f, 6f), Random.Range(-4f, 4f), 0);
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        // Torna esattamente al centro
         target.localPosition = originalPos;
+        isAnimating = false;
+    }
+
+    // ==========================================
+    // ANIMAZIONE DI ERRORE GLOBALE
+    // ==========================================
+
+    IEnumerator GlobalResetAnimation()
+    {
+        isAnimating = true;
+
+        Image pressImg = pressGraphic != null ? pressGraphic.GetComponent<Image>() : null;
+        Image flipImg = flipGraphic != null ? flipGraphic.GetComponent<Image>() : null;
+        Image drainImg = drainGraphic != null ? drainGraphic.GetComponent<Image>() : null;
+
+        Color origPress = pressImg != null ? pressImg.color : Color.white;
+        Color origFlip = flipImg != null ? flipImg.color : Color.white;
+        Color origDrain = drainImg != null ? drainImg.color : Color.white;
+
+        // Questa riga tingerà momentaneamente di rosso ANCHE i tuoi nuovi Sprite! Effetto fantastico.
+        Color errorColor = new Color(1f, 0.3f, 0.3f);
+        if (pressImg != null) pressImg.color = errorColor;
+        if (flipImg != null) flipImg.color = errorColor;
+        if (drainImg != null) drainImg.color = errorColor;
+
+        Vector3 pPos = pressGraphic != null ? pressGraphic.localPosition : Vector3.zero;
+        Vector3 fPos = flipGraphic != null ? flipGraphic.localPosition : Vector3.zero;
+        Vector3 dPos = drainGraphic != null ? drainGraphic.localPosition : Vector3.zero;
+
+        float shakeAmount = 20f;
+        for (int i = 0; i < 4; i++)
+        {
+            float dir = (i % 2 == 0) ? 1f : -1f;
+            Vector3 offset = new Vector3(shakeAmount * dir, 0, 0);
+
+            if (pressGraphic != null) pressGraphic.localPosition = pPos + offset;
+            if (flipGraphic != null) flipGraphic.localPosition = fPos + offset;
+            if (drainGraphic != null) drainGraphic.localPosition = dPos + offset;
+
+            yield return new WaitForSeconds(0.06f);
+        }
+
+        if (pressGraphic != null) pressGraphic.localPosition = pPos;
+        if (flipGraphic != null) flipGraphic.localPosition = fPos;
+        if (drainGraphic != null) drainGraphic.localPosition = dPos;
+
+        if (pressImg != null) pressImg.color = origPress;
+        if (flipImg != null) flipImg.color = origFlip;
+        if (drainImg != null) drainImg.color = origDrain;
+
         isAnimating = false;
     }
 
@@ -135,10 +239,9 @@ public class Level4Manager : MonoBehaviour
 
     IEnumerator CompleteLevelRoutine()
     {
-        isAnimating = true; // Blocca tutto
+        isAnimating = true;
         Debug.Log("LEVEL 4 COMPLETE!");
 
-        // Pausa di mezzo secondo per far finire l'ultima animazione prima di cambiare livello
         yield return new WaitForSeconds(0.5f);
 
         GoToNextLevel();
@@ -146,7 +249,6 @@ public class Level4Manager : MonoBehaviour
 
     void GoToNextLevel()
     {
-        // Accende il nuovo UI e spegne il vecchio[cite: 1, 6]
         if (NextLevel != null) NextLevel.SetActive(true);
         if (CurrentLevel != null) CurrentLevel.SetActive(false);
     }
