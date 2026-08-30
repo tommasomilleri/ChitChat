@@ -1,25 +1,27 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using System.Collections;
-using System.Collections.Generic;
 
 public class HoverUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    [Header("Impostazioni Cursore")]
     public Texture2D customeCursor;
+
+    [Tooltip("Il punto dell'immagine che clicca. Metti metà della risoluzione per centrarlo (es. 16, 16 per un'immagine 32x32)")]
+    public Vector2 hotSpot = Vector2.zero;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Cursor.SetCursor(customeCursor, Vector2.zero, CursorMode.Auto);
+        // Ora usa l'hotSpot personalizzabile invece del rigido Vector2.zero
+        Cursor.SetCursor(customeCursor, hotSpot, CursorMode.Auto);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
     }
+
     void OnDisable()
     {
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
     }
-
 }

@@ -6,27 +6,31 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
 {
     [Header("Visual Settings (Termometro Realistico)")]
     public Gradient gradient;
-    [Tooltip("Trascina qui l'immagine del liquido (Impostata su Image Type: Filled)")]
     public Image thermometerFill;
 
     [Header("I Tre Topolini (Zone Target)")]
-    public GameObject blueMouse;   // Zona 0: 0.0 - 0.33
-    public GameObject yellowMouse; // Zona 1: 0.33 - 0.66
-    public GameObject redMouse;    // Zona 2: 0.66 - 1.0
+    public GameObject blueMouse;
+    public GameObject yellowMouse;
+    public GameObject redMouse;
 
     [Header("UI & Level Management")]
     public GameObject NextLevel;
     public GameObject CurrentLevel;
-    public GameObject foam;  // Bolle
-    public GameObject steam; // Vapore
+    public GameObject foam;
+    public GameObject steam;
     public GameObject check;
 
-    [Header("Cronometro Analogico")]
+    [Header("Orologio Analogico (Infallibile)")]
     public RectTransform timerHand;
+    public bool tickMovement = true;
+    [Tooltip("I gradi di distanza tra un numero e l'altro sull'orologio (Lascia 30)")]
+    public float degreesPerTick = 30f;
+    [Tooltip("L'angolo base per far puntare la lancetta in alto (Lascia 90)")]
+    public float clockOffset = 90f;
 
-    [Header("Fisica Fluida (Stabile)")]
-    [Tooltip("Più il valore è basso, più il liquido scivola velocemente. (Consigliato: 0.15)")]
-    [Range(0.05f, 0.5f)] public float fluidViscosity = 0.15f;
+    [Header("Fisica dell'Inerzia (Difficoltà)")]
+    [Range(0.01f, 1f)] public float clickForce = 0.15f;
+    [Range(0.1f, 5f)] public float friction = 1.5f;
 
     [Header("Audio Dinamico")]
     public AudioSource audioSource;
@@ -36,19 +40,13 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
 
     [Header("Game Balance")]
     public float rotationStep = 15f;
-
-    [Tooltip("Percentuale di riempimento per ogni click (es. 0.15 = 15%)")]
-    [Range(0.01f, 0.5f)]
-    public float temperatureStep = 0.15f;
-
-    public float cookingTimeRequired = 8f;
+    [Range(1f, 12f)] public float cookingTimeRequired = 8f;
     public int winsNeeded = 3;
 
     public int wrongPenalty = 15;
     public float errorTolerance = 4f;
 
     // --- VARIABILI INTERNE ---
-    private float targetFillAmount = 0f;
     private float currentFillAmount = 0f;
     private float fillVelocity = 0f;
 
@@ -66,13 +64,7 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
     void Start()
     {
         originalKnobScale = transform.localScale;
-
-        if (thermometerFill != null)
-        {
-            currentFillAmount = thermometerFill.fillAmount;
-            targetFillAmount = currentFillAmount;
-        }
-
+        if (thermometerFill != null) currentFillAmount = thermometerFill.fillAmount;
         RandomizePotState();
     }
 
@@ -81,62 +73,89 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
         if (levelCompleted) return;
 
         // =========================================================
-        // 1. FISICA FLUIDA STABILE (Niente esplosioni o blocchi!)
+        // 1. FISICA DELL'INERZIA E DELLO SCIVOLAMENTO
         // =========================================================
         if (thermometerFill != null)
         {
-            // SmoothDamp insegue il bersaglio in modo morbido senza mai superare il limite
-            currentFillAmount = Mathf.SmoothDamp(currentFillAmount, targetFillAmount, ref fillVelocity, fluidViscosity);
+            fillVelocity = Mathf.Lerp(fillVelocity, 0f, friction * Time.deltaTime);
+            currentFillAmount += fillVelocity * Time.deltaTime;
+
+            if (currentFillAmount <= 0f || currentFillAmount >= 1f)
+            {
+                fillVelocity = 0f;
+                currentFillAmount = Mathf.Clamp01(currentFillAmount);
+            }
 
             thermometerFill.fillAmount = currentFillAmount;
-            thermometerFill.color = gradient.Evaluate(Mathf.Clamp01(currentFillAmount));
+            thermometerFill.color = gradient.Evaluate(currentFillAmount);
         }
 
         // =========================================================
-        // 2. LOGICA DELLE ZONE (Dalle zampe alla testa)
+        // 2. LOGICA DELLE ZONE
         // =========================================================
-        if (currentFillAmount <= 0.33f) currentZone = 0;      // Blu
-        else if (currentFillAmount <= 0.66f) currentZone = 1; // Giallo
-        else currentZone = 2;                                 // Rosso
+        if (currentFillAmount <= 0.33f) currentZone = 0;
+        else if (currentFillAmount <= 0.66f) currentZone = 1;
+        else currentZone = 2;
 
         UpdateMiceVisuals();
 
         // =========================================================
-        // 3. LOGICA SPIETATA DEL TIMER
+        // 3. TIMER DI COTTURA SPIETATO
         // =========================================================
-        if (currentZone == targetZone) // Sei nella zona giusta!
+        if (check.activeSelf == false)
         {
-            currentErrorTime = 0f;
-            currentCookingTime += Time.deltaTime;
-
-            if (currentCookingTime >= cookingTimeRequired)
-            {
-                RoundWon();
-            }
-        }
-        else // Sei uscito dalla zona!
-        {
-            currentCookingTime = 0f; // Il timer si azzera ISTANTANEAMENTE!
-            currentErrorTime += Time.deltaTime;
-
-            if (currentErrorTime >= errorTolerance)
+            if (currentZone == targetZone)
             {
                 currentErrorTime = 0f;
-                // Danneggia il GameManager globale[cite: 1]
-                if (GameManager.instance != null) GameManager.instance.DecreaseGlobalQuality(wrongPenalty);
-                Debug.Log("Il latte si sta rovinando!");
+                currentCookingTime += Time.deltaTime;
+
+                if (currentCookingTime >= cookingTimeRequired)
+                {
+                    RoundWon();
+                }
+            }
+            else
+            {
+                currentCookingTime = 0f;
+                currentErrorTime += Time.deltaTime;
+
+                if (currentErrorTime >= errorTolerance)
+                {
+                    currentErrorTime = 0f;
+                    if (GameManager.instance != null) GameManager.instance.DecreaseGlobalQuality(wrongPenalty); // [cite: 1]
+                }
             }
         }
 
         // =========================================================
-        // 4. UI (Cronometro e Spunta)
+        // 4. OROLOGIO ANALOGICO (FORMULA MATEMATICA PERFETTA)
         // =========================================================
         if (timerHand != null)
         {
-            float rotationAngle = (currentCookingTime / cookingTimeRequired) * -360f;
+            float displayTime;
+
+            if (check.activeSelf)
+            {
+                // VITTORIA! Congela la lancetta fiera sulla Corona (0 secondi rimasti)
+                displayTime = 0f;
+            }
+            else
+            {
+                displayTime = cookingTimeRequired - currentCookingTime;
+                displayTime = Mathf.Max(0f, displayTime);
+
+                // Arrotonda per il tic-tac meccanico
+                if (tickMovement) displayTime = Mathf.Ceil(displayTime);
+            }
+
+            // Formula Infallibile: L'offset a 90 corregge l'immagine, e 30 sono i gradi per ogni ora
+            float rotationAngle = clockOffset - (displayTime * degreesPerTick);
             timerHand.localRotation = Quaternion.Euler(0f, 0f, rotationAngle);
         }
 
+        // =========================================================
+        // 5. SPUNTA VERDE E RIPARTENZA
+        // =========================================================
         if (check.activeSelf)
         {
             checkTimer += Time.deltaTime;
@@ -144,6 +163,7 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
             {
                 check.SetActive(false);
                 checkTimer = 0f;
+                RandomizePotState();
             }
         }
     }
@@ -152,11 +172,12 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
     {
         currentWins++;
         currentCookingTime = 0f;
+        fillVelocity = 0f; // Ferma il liquido
+
         check.SetActive(true);
         checkTimer = 0f;
 
         if (currentWins >= winsNeeded) LevelComplete();
-        else RandomizePotState();
     }
 
     void RandomizePotState()
@@ -171,7 +192,7 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
     }
 
     // =========================================================
-    // CONTROLLI MOUSE E AUDIO DINAMICO
+    // CONTROLLI MOUSE (AGGIUNGONO VELOCITÀ AL LIQUIDO)
     // =========================================================
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -179,13 +200,13 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
 
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            targetFillAmount = Mathf.Clamp(targetFillAmount - temperatureStep, 0f, 1f);
+            fillVelocity -= clickForce;
             transform.Rotate(0f, 0f, rotationStep);
             PlayDynamicClick();
         }
         else if (eventData.button == PointerEventData.InputButton.Right)
         {
-            targetFillAmount = Mathf.Clamp(targetFillAmount + temperatureStep, 0f, 1f);
+            fillVelocity += clickForce;
             transform.Rotate(0f, 0f, -rotationStep);
             PlayDynamicClick();
         }
@@ -195,7 +216,7 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
     {
         if (audioSource != null && knobClickSound != null)
         {
-            audioSource.pitch = Mathf.Lerp(minPitch, maxPitch, targetFillAmount);
+            audioSource.pitch = Mathf.Lerp(minPitch, maxPitch, currentFillAmount);
             audioSource.PlayOneShot(knobClickSound);
         }
     }
@@ -220,7 +241,6 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
     void GoToNextLevel()
     {
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-        // Transizione UI ottimizzata[cite: 1]
         if (NextLevel != null) NextLevel.SetActive(true);
         if (CurrentLevel != null) CurrentLevel.SetActive(false);
     }
