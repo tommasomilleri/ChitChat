@@ -25,8 +25,8 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
     public bool tickMovement = true;
     [Tooltip("I gradi di distanza tra un numero e l'altro sull'orologio (Lascia 30)")]
     public float degreesPerTick = 30f;
-    [Tooltip("L'angolo base per far puntare la lancetta in alto (Lascia 90)")]
-    public float clockOffset = 90f;
+    [Tooltip("L'angolo base per far puntare la lancetta in alto in base al tuo disegno")]
+    public float clockOffset = -140f; // <-- Valore reso permanente!
 
     [Header("Fisica dell'Inerzia (Difficoltà)")]
     [Range(0.01f, 1f)] public float clickForce = 0.15f;
@@ -40,7 +40,7 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
 
     [Header("Game Balance")]
     public float rotationStep = 15f;
-    [Range(1f, 12f)] public float cookingTimeRequired = 8f;
+    [Range(1f, 24f)] public float cookingTimeRequired = 12f;
     public int winsNeeded = 3;
 
     public int wrongPenalty = 15;
@@ -58,13 +58,17 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
     private float currentCookingTime = 0f;
     private float currentErrorTime = 0f;
     private float checkTimer = 0f;
+
     private bool levelCompleted = false;
+    private bool hasStarted = false; // LA NOVITÀ: Blocca il gioco finché non clicchi!
     private Vector3 originalKnobScale;
 
     void Start()
     {
         originalKnobScale = transform.localScale;
         if (thermometerFill != null) currentFillAmount = thermometerFill.fillAmount;
+
+        // Estrae subito lo stato così i giocatori possono comunicare, ma il timer è in pausa!
         RandomizePotState();
     }
 
@@ -100,9 +104,9 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
         UpdateMiceVisuals();
 
         // =========================================================
-        // 3. TIMER DI COTTURA SPIETATO
+        // 3. TIMER DI COTTURA SPIETATO (Attivo solo dopo il 1° click)
         // =========================================================
-        if (check.activeSelf == false)
+        if (hasStarted && check.activeSelf == false)
         {
             if (currentZone == targetZone)
             {
@@ -122,33 +126,29 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
                 if (currentErrorTime >= errorTolerance)
                 {
                     currentErrorTime = 0f;
-                    if (GameManager.instance != null) GameManager.instance.DecreaseGlobalQuality(wrongPenalty); // [cite: 1]
+                    if (GameManager.instance != null) GameManager.instance.DecreaseGlobalQuality(wrongPenalty);
                 }
             }
         }
 
         // =========================================================
-        // 4. OROLOGIO ANALOGICO (FORMULA MATEMATICA PERFETTA)
+        // 4. OROLOGIO ANALOGICO
         // =========================================================
         if (timerHand != null)
         {
             float displayTime;
 
-            if (check.activeSelf)
+            // Se il gioco non è iniziato, o se c'è la spunta di vittoria, tieni l'orologio fermo a zero!
+            if (!hasStarted || check.activeSelf)
             {
-                // VITTORIA! Congela la lancetta fiera sulla Corona (0 secondi rimasti)
                 displayTime = 0f;
             }
             else
             {
-                displayTime = cookingTimeRequired - currentCookingTime;
-                displayTime = Mathf.Max(0f, displayTime);
-
-                // Arrotonda per il tic-tac meccanico
-                if (tickMovement) displayTime = Mathf.Ceil(displayTime);
+                displayTime = currentCookingTime;
+                if (tickMovement) displayTime = Mathf.Floor(displayTime);
             }
 
-            // Formula Infallibile: L'offset a 90 corregge l'immagine, e 30 sono i gradi per ogni ora
             float rotationAngle = clockOffset - (displayTime * degreesPerTick);
             timerHand.localRotation = Quaternion.Euler(0f, 0f, rotationAngle);
         }
@@ -172,7 +172,7 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
     {
         currentWins++;
         currentCookingTime = 0f;
-        fillVelocity = 0f; // Ferma il liquido
+        fillVelocity = 0f; // Ferma il liquido per farti respirare
 
         check.SetActive(true);
         checkTimer = 0f;
@@ -186,17 +186,42 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
         if (steam != null) steam.SetActive(potState == 1);
         if (foam != null) foam.SetActive(potState == 2);
 
-        if (potState == 0) targetZone = 2;
-        else if (potState == 1) targetZone = 0;
-        else if (potState == 2) targetZone = 1;
+        // 1. Calcoliamo la colonna di partenza (0=Blu, 1=Giallo, 2=Rosso)
+        int startingColumn = 0;
+        if (currentFillAmount <= 0.33f) startingColumn = 0;
+        else if (currentFillAmount <= 0.66f) startingColumn = 1;
+        else startingColumn = 2;
+
+        // 2. Logica della Matrice basata su Screenshot 2026-08-30 155550.jpg
+        if (potState == 0) // RIGA 1: Pentola Vuota
+        {
+            if (startingColumn == 0) targetZone = 2;      // Col Blu -> Target Rosso
+            else if (startingColumn == 1) targetZone = 0; // Col Gialla -> Target Blu
+            else if (startingColumn == 2) targetZone = 1; // Col Rossa -> Target Giallo
+        }
+        else if (potState == 1) // RIGA 2: Vapore (Steam)
+        {
+            if (startingColumn == 0) targetZone = 1;      // Col Blu -> Target Giallo
+            else if (startingColumn == 1) targetZone = 2; // Col Gialla -> Target Rosso
+            else if (startingColumn == 2) targetZone = 0; // Col Rossa -> Target Blu
+        }
+        else if (potState == 2) // RIGA 3: Bolle (Foam)
+        {
+            if (startingColumn == 0) targetZone = 0;      // Col Blu -> Target Blu
+            else if (startingColumn == 1) targetZone = 1; // Col Gialla -> Target Giallo
+            else if (startingColumn == 2) targetZone = 2; // Col Rossa -> Target Rosso
+        }
     }
 
     // =========================================================
-    // CONTROLLI MOUSE (AGGIUNGONO VELOCITÀ AL LIQUIDO)
+    // CONTROLLI MOUSE (Fanno partire il gioco!)
     // =========================================================
     public void OnPointerClick(PointerEventData eventData)
     {
         if (levelCompleted) return;
+
+        // SBLOCCA IL GIOCO AL PRIMO CLICK!
+        if (!hasStarted) hasStarted = true;
 
         if (eventData.button == PointerEventData.InputButton.Left)
         {
