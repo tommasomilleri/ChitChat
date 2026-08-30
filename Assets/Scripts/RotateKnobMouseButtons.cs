@@ -8,6 +8,12 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
     public Gradient gradient;
     public Image thermometerFill;
 
+    [Header("Rotazione Visiva Manopola (Limiti)")]
+    [Tooltip("Angolo della manopola quando il liquido è a 0 (es. 140)")]
+    public float minKnobAngle = 140f;
+    [Tooltip("Angolo della manopola quando il liquido è a 1 (es. -140)")]
+    public float maxKnobAngle = -140f;
+
     [Header("I Tre Topolini (Zone Target)")]
     public GameObject blueMouse;
     public GameObject yellowMouse;
@@ -23,32 +29,33 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
     [Header("Orologio Analogico (Infallibile)")]
     public RectTransform timerHand;
     public bool tickMovement = true;
-    [Tooltip("I gradi di distanza tra un numero e l'altro sull'orologio (Lascia 30)")]
     public float degreesPerTick = 30f;
-    [Tooltip("L'angolo base per far puntare la lancetta in alto in base al tuo disegno")]
-    public float clockOffset = -140f; // <-- Valore reso permanente!
+    public float clockOffset = -140f;
 
     [Header("Fisica dell'Inerzia (Difficoltà)")]
     [Range(0.01f, 1f)] public float clickForce = 0.15f;
     [Range(0.1f, 5f)] public float friction = 1.5f;
 
-    [Header("Audio Dinamico")]
-    public AudioSource audioSource;
+    [Header("Audio SFX (Pentola & Manopola)")]
+    public AudioSource audioSource; // Usa questo SOLO per pentola e manopola
     public AudioClip knobClickSound;
-    public float minPitch = 0.7f;
-    public float maxPitch = 1.5f;
+    public AudioClip steamSound;
+    public AudioClip bubblesSound;
+
+    [Header("Audio SFX (Orologio)")]
+    public AudioSource clockAudioSource; // NUOVO: Dedicato solo all'orologio
+    public AudioClip clockTickSound;     // NUOVO: La tua traccia da 8 secondi
 
     [Header("Game Balance")]
     public float rotationStep = 15f;
     [Range(1f, 24f)] public float cookingTimeRequired = 12f;
     public int winsNeeded = 3;
-
-    public int wrongPenalty = 15;
-    public float errorTolerance = 4f;
+    public float errorTolerance = 1f;
 
     // --- VARIABILI INTERNE ---
     private float currentFillAmount = 0f;
     private float fillVelocity = 0f;
+    private float currentKnobAngle = 0f;
 
     private int currentZone = 0;
     private int targetZone = 0;
@@ -60,7 +67,7 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
     private float checkTimer = 0f;
 
     private bool levelCompleted = false;
-    private bool hasStarted = false; // LA NOVITÀ: Blocca il gioco finché non clicchi!
+    private bool hasStarted = false;
     private Vector3 originalKnobScale;
 
     void Start()
@@ -68,7 +75,9 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
         originalKnobScale = transform.localScale;
         if (thermometerFill != null) currentFillAmount = thermometerFill.fillAmount;
 
-        // Estrae subito lo stato così i giocatori possono comunicare, ma il timer è in pausa!
+        currentKnobAngle = Mathf.Lerp(minKnobAngle, maxKnobAngle, currentFillAmount);
+        transform.localRotation = Quaternion.Euler(0f, 0f, currentKnobAngle);
+
         RandomizePotState();
     }
 
@@ -77,7 +86,7 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
         if (levelCompleted) return;
 
         // =========================================================
-        // 1. FISICA DELL'INERZIA E DELLO SCIVOLAMENTO
+        // 1. FISICA DELL'INERZIA (SOLO PER IL LIQUIDO)
         // =========================================================
         if (thermometerFill != null)
         {
@@ -104,7 +113,7 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
         UpdateMiceVisuals();
 
         // =========================================================
-        // 3. TIMER DI COTTURA SPIETATO (Attivo solo dopo il 1° click)
+        // 3. TIMER DI COTTURA SPIETATO & AUDIO OROLOGIO
         // =========================================================
         if (hasStarted && check.activeSelf == false)
         {
@@ -112,6 +121,17 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
             {
                 currentErrorTime = 0f;
                 currentCookingTime += Time.deltaTime;
+
+                // GESTIONE AUDIO OROLOGIO CONTINUO
+                if (clockAudioSource != null && clockTickSound != null)
+                {
+                    if (!clockAudioSource.isPlaying)
+                    {
+                        clockAudioSource.clip = clockTickSound;
+                        clockAudioSource.loop = true; // Assicura che la traccia da 8 secondi riparta
+                        clockAudioSource.Play();
+                    }
+                }
 
                 if (currentCookingTime >= cookingTimeRequired)
                 {
@@ -123,11 +143,24 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
                 currentCookingTime = 0f;
                 currentErrorTime += Time.deltaTime;
 
+                // FERMA L'OROLOGIO: Il liquido è fuori zona, il timer si azzera!
+                if (clockAudioSource != null && clockAudioSource.isPlaying)
+                {
+                    clockAudioSource.Stop();
+                }
+
                 if (currentErrorTime >= errorTolerance)
                 {
                     currentErrorTime = 0f;
-                    if (GameManager.instance != null) GameManager.instance.DecreaseGlobalQuality(wrongPenalty);
                 }
+            }
+        }
+        else
+        {
+            // Silenzia l'orologio durante le pause o prima del primissimo click
+            if (clockAudioSource != null && clockAudioSource.isPlaying)
+            {
+                clockAudioSource.Stop();
             }
         }
 
@@ -138,7 +171,6 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
         {
             float displayTime;
 
-            // Se il gioco non è iniziato, o se c'è la spunta di vittoria, tieni l'orologio fermo a zero!
             if (!hasStarted || check.activeSelf)
             {
                 displayTime = 0f;
@@ -163,6 +195,7 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
             {
                 check.SetActive(false);
                 checkTimer = 0f;
+                hasStarted = false;
                 RandomizePotState();
             }
         }
@@ -172,10 +205,13 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
     {
         currentWins++;
         currentCookingTime = 0f;
-        fillVelocity = 0f; // Ferma il liquido per farti respirare
+        fillVelocity = 0f;
 
         check.SetActive(true);
         checkTimer = 0f;
+
+        if (audioSource != null) audioSource.Stop(); // Ferma la pentola
+        if (clockAudioSource != null) clockAudioSource.Stop(); // Ferma l'orologio
 
         if (currentWins >= winsNeeded) LevelComplete();
     }
@@ -186,62 +222,87 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
         if (steam != null) steam.SetActive(potState == 1);
         if (foam != null) foam.SetActive(potState == 2);
 
-        // 1. Calcoliamo la colonna di partenza (0=Blu, 1=Giallo, 2=Rosso)
+        if (audioSource != null)
+        {
+            audioSource.Stop();
+
+            if (potState == 1 && steamSound != null)
+            {
+                audioSource.clip = steamSound;
+                audioSource.loop = true;
+                audioSource.Play();
+            }
+            else if (potState == 2 && bubblesSound != null)
+            {
+                audioSource.clip = bubblesSound;
+                audioSource.loop = true;
+                audioSource.Play();
+            }
+        }
+
         int startingColumn = 0;
         if (currentFillAmount <= 0.33f) startingColumn = 0;
         else if (currentFillAmount <= 0.66f) startingColumn = 1;
         else startingColumn = 2;
 
-        // 2. Logica della Matrice basata su Screenshot 2026-08-30 155550.jpg
-        if (potState == 0) // RIGA 1: Pentola Vuota
+        if (potState == 0) // Pentola Vuota
         {
-            if (startingColumn == 0) targetZone = 2;      // Col Blu -> Target Rosso
-            else if (startingColumn == 1) targetZone = 0; // Col Gialla -> Target Blu
-            else if (startingColumn == 2) targetZone = 1; // Col Rossa -> Target Giallo
+            if (startingColumn == 0) targetZone = 2;
+            else if (startingColumn == 1) targetZone = 0;
+            else if (startingColumn == 2) targetZone = 1;
         }
-        else if (potState == 1) // RIGA 2: Vapore (Steam)
+        else if (potState == 1) // Vapore
         {
-            if (startingColumn == 0) targetZone = 1;      // Col Blu -> Target Giallo
-            else if (startingColumn == 1) targetZone = 2; // Col Gialla -> Target Rosso
-            else if (startingColumn == 2) targetZone = 0; // Col Rossa -> Target Blu
+            if (startingColumn == 0) targetZone = 1;
+            else if (startingColumn == 1) targetZone = 2;
+            else if (startingColumn == 2) targetZone = 0;
         }
-        else if (potState == 2) // RIGA 3: Bolle (Foam)
+        else if (potState == 2) // Bolle
         {
-            if (startingColumn == 0) targetZone = 0;      // Col Blu -> Target Blu
-            else if (startingColumn == 1) targetZone = 1; // Col Gialla -> Target Giallo
-            else if (startingColumn == 2) targetZone = 2; // Col Rossa -> Target Rosso
+            if (startingColumn == 0) targetZone = 0;
+            else if (startingColumn == 1) targetZone = 1;
+            else if (startingColumn == 2) targetZone = 2;
         }
     }
 
     // =========================================================
-    // CONTROLLI MOUSE (Fanno partire il gioco!)
+    // CONTROLLI MOUSE - SCATTI ISTANTANEI
     // =========================================================
     public void OnPointerClick(PointerEventData eventData)
     {
         if (levelCompleted) return;
 
-        // SBLOCCA IL GIOCO AL PRIMO CLICK!
         if (!hasStarted) hasStarted = true;
 
         if (eventData.button == PointerEventData.InputButton.Left)
         {
             fillVelocity -= clickForce;
-            transform.Rotate(0f, 0f, rotationStep);
-            PlayDynamicClick();
+            currentKnobAngle += rotationStep;
+            ApplyClampedKnobRotation();
+            PlayClickSound();
         }
         else if (eventData.button == PointerEventData.InputButton.Right)
         {
             fillVelocity += clickForce;
-            transform.Rotate(0f, 0f, -rotationStep);
-            PlayDynamicClick();
+            currentKnobAngle -= rotationStep;
+            ApplyClampedKnobRotation();
+            PlayClickSound();
         }
     }
 
-    void PlayDynamicClick()
+    void ApplyClampedKnobRotation()
+    {
+        float min = Mathf.Min(minKnobAngle, maxKnobAngle);
+        float max = Mathf.Max(minKnobAngle, maxKnobAngle);
+
+        currentKnobAngle = Mathf.Clamp(currentKnobAngle, min, max);
+        transform.localRotation = Quaternion.Euler(0f, 0f, currentKnobAngle);
+    }
+
+    void PlayClickSound()
     {
         if (audioSource != null && knobClickSound != null)
         {
-            audioSource.pitch = Mathf.Lerp(minPitch, maxPitch, currentFillAmount);
             audioSource.PlayOneShot(knobClickSound);
         }
     }
@@ -260,6 +321,8 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
     {
         levelCompleted = true;
         if (check != null) check.SetActive(true);
+        if (audioSource != null) audioSource.Stop();
+        if (clockAudioSource != null) clockAudioSource.Stop();
         Invoke(nameof(GoToNextLevel), 1.5f);
     }
 
