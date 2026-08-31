@@ -20,18 +20,17 @@ public class Level4Manager : MonoBehaviour
     public RectTransform flipGraphic;
     public RectTransform drainGraphic;
 
-    [Header("Visual Progress (Le 5 Lucine)")]
-    [Tooltip("Inserisci qui le 5 immagini (cerchietti) della UI")]
+    [Header("Visual Progress (I Timbri di Cera)")]
+    [Tooltip("Inserisci qui le 5 immagini della UI (i quadratini da sostituire)")]
     public Image[] progressLights;
 
-    [Tooltip("L'immagine quando il passo è ancora da fare (Es. Goccia vuota)")]
-    public Sprite lightOffSprite;
-    [Tooltip("L'immagine quando il passo è completato (Es. Goccia piena)")]
-    public Sprite lightOnSprite;
+    [Tooltip("L'immagine della cera VUOTA (Es. WaxEmpty)")]
+    public Sprite waxEmptySprite;
 
-    // Vecchi colori usati come salvavita se non metti le immagini
-    public Color lightOffColor = new Color(0.3f, 0.3f, 0.3f);
-    public Color lightOnColor = new Color(1f, 0.8f, 0f);
+    // VECCHIO: public Sprite waxStampedSprite;
+    // NUOVO: Un array per contenere tutti i tuoi timbri!
+    [Tooltip("Trascina qui tutti i tuoi WaxFoot (1, 2, 3...) per pescarli a caso!")]
+    public Sprite[] waxStampedSprites;
 
     [Header("Audio Feedback")]
     public AudioSource audioSource;
@@ -42,7 +41,7 @@ public class Level4Manager : MonoBehaviour
 
     void Start()
     {
-        UpdateLights();
+        UpdateLights(true);
     }
 
     public void ClickProcess(string process)
@@ -58,9 +57,16 @@ public class Level4Manager : MonoBehaviour
         if (process == correctSequence[currentStep])
         {
             Debug.Log("Correct: " + process);
-            currentStep++;
-            UpdateLights();
 
+            // 1. Avvia l'animazione fisica del timbro!
+            if (currentStep < progressLights.Length)
+            {
+                StartCoroutine(StampWaxAnimation(progressLights[currentStep]));
+            }
+
+            currentStep++;
+
+            // Suono di successo con pitch randomico[cite: 3]
             if (audioSource != null && successSound != null)
             {
                 audioSource.pitch = Random.Range(0.9f, 1.1f);
@@ -90,9 +96,10 @@ public class Level4Manager : MonoBehaviour
 
             StartCoroutine(GlobalResetAnimation());
 
+            // Penalità globale
             if (GameManager.instance != null)
             {
-                GameManager.instance.DecreaseGlobalQuality(wrongActionPenalty); //[cite: 1]
+                GameManager.instance.DecreaseGlobalQuality(wrongActionPenalty);
             }
         }
     }
@@ -100,34 +107,68 @@ public class Level4Manager : MonoBehaviour
     public void ResetSequence()
     {
         currentStep = 0;
-        UpdateLights();
+        UpdateLights(true); // Resetta visivamente tutte le cere istantaneamente
         Debug.Log("Sequence reset. Try again!");
     }
 
-    // --- LA NUOVA MAGIA DELLE LUCI ---
-    void UpdateLights()
+    void UpdateLights(bool resetToEmpty = false)
     {
         for (int i = 0; i < progressLights.Length; i++)
         {
-            if (progressLights[i] != null)
+            if (progressLights[i] != null && waxEmptySprite != null)
             {
-                // Se hai inserito degli Sprite nell'Inspector, usa quelli!
-                if (lightOnSprite != null && lightOffSprite != null)
+                if (resetToEmpty)
                 {
-                    progressLights[i].sprite = (i < currentStep) ? lightOnSprite : lightOffSprite;
-                    progressLights[i].color = Color.white; // Assicura che l'immagine sia visibile e non tinta
-                }
-                else
-                {
-                    // Salvavita: usa i colori se mancano le immagini
-                    progressLights[i].color = (i < currentStep) ? lightOnColor : lightOffColor;
+                    progressLights[i].sprite = waxEmptySprite;
+                    progressLights[i].color = Color.white;
+                    progressLights[i].rectTransform.localScale = Vector3.one;
                 }
             }
         }
     }
 
     // ==========================================
-    // ANIMAZIONI DI SUCCESSO
+    // ANIMAZIONE: IL TIMBRO RANDOM SULLA CERA
+    // ==========================================
+    IEnumerator StampWaxAnimation(Image waxImage)
+    {
+        if (waxImage == null) yield break;
+
+        RectTransform rt = waxImage.rectTransform;
+        Vector3 originalScale = Vector3.one;
+
+        // 1. Il timbro scende (si schiaccia visivamente come per assorbire il colpo)
+        float durationDown = 0.1f;
+        float elapsed = 0f;
+        while (elapsed < durationDown)
+        {
+            rt.localScale = Vector3.Lerp(originalScale, new Vector3(1.1f, 0.7f, 1f), elapsed / durationDown);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // 2. MAGIA: Se hai inserito dei timbri nell'Array, ne pesca uno a caso!
+        if (waxStampedSprites != null && waxStampedSprites.Length > 0)
+        {
+            int randomIndex = Random.Range(0, waxStampedSprites.Length);
+            waxImage.sprite = waxStampedSprites[randomIndex];
+        }
+
+        // 3. Rimbalzo elastico verso l'alto
+        float durationUp = 0.15f;
+        elapsed = 0f;
+        while (elapsed < durationUp)
+        {
+            rt.localScale = Vector3.Lerp(new Vector3(1.1f, 0.7f, 1f), originalScale, elapsed / durationUp);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        rt.localScale = originalScale;
+    }
+
+    // ==========================================
+    // ANIMAZIONI STRUMENTI (Esistenti)
     // ==========================================
 
     IEnumerator SquishAnimation(RectTransform target)
@@ -199,7 +240,6 @@ public class Level4Manager : MonoBehaviour
         Color origFlip = flipImg != null ? flipImg.color : Color.white;
         Color origDrain = drainImg != null ? drainImg.color : Color.white;
 
-        // Questa riga tingerà momentaneamente di rosso ANCHE i tuoi nuovi Sprite! Effetto fantastico.
         Color errorColor = new Color(1f, 0.3f, 0.3f);
         if (pressImg != null) pressImg.color = errorColor;
         if (flipImg != null) flipImg.color = errorColor;
