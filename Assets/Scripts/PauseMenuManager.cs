@@ -19,7 +19,7 @@ public class PauseMenuManager : MonoBehaviour
     [Tooltip("Se falso, premere ESC non farà nulla.")]
     public bool canPause = false;
 
-    private bool isPaused = false;
+    public bool isPaused = false;
     private Coroutine slideCoroutine;
 
     void Awake()
@@ -70,10 +70,14 @@ public class PauseMenuManager : MonoBehaviour
         isPaused = true;
         pauseMenuContainer.SetActive(true);
         Time.timeScale = 0f;
-
-        if (CheeseQualityManager.Instance != null && CheeseQualityManager.Instance.qualityBar != null)
+        // Mette in pausa la musica di sottofondo
+        if (ProceduralMusicManager.instance != null)
         {
-            CheeseQualityManager.Instance.qualityBar.gameObject.SetActive(false);
+            ProceduralMusicManager.instance.PauseMusic();
+        }
+        if (GameManager.instance != null && GameManager.instance.qualityBarContainer != null)
+        {
+            GameManager.instance.qualityBarContainer.SetActive(false); // Usa true per ResumeGame
         }
 
         if (slideCoroutine != null) StopCoroutine(slideCoroutine);
@@ -84,10 +88,14 @@ public class PauseMenuManager : MonoBehaviour
     {
         isPaused = false;
         Time.timeScale = 1f;
-
-        if (CheeseQualityManager.Instance != null && CheeseQualityManager.Instance.qualityBar != null)
+        // Fa ripartire la musica dal punto esatto in cui si era fermata
+        if (ProceduralMusicManager.instance != null)
         {
-            CheeseQualityManager.Instance.qualityBar.gameObject.SetActive(true);
+            ProceduralMusicManager.instance.ResumeMusic();
+        }
+        if (GameManager.instance != null && GameManager.instance.qualityBarContainer != null)
+        {
+            GameManager.instance.qualityBarContainer.SetActive(false); // Usa true per ResumeGame
         }
 
         if (slideCoroutine != null) StopCoroutine(slideCoroutine);
@@ -97,9 +105,9 @@ public class PauseMenuManager : MonoBehaviour
     public void QuitToMainMenu()
     {
         // 1. Riporta il tempo alla normalità, altrimenti la nuova scena si caricherebbe in pausa!
-        Time.timeScale = 1f;
-
-        Debug.Log("Resetting scene and returning to Main Menu...");
+        if (GameManager.instance != null) GameManager.instance.ResetQuality();
+        canPause = false;
+        isPaused = false;
 
         // 2. Ricarica la scena attuale da zero usando il suo Index
         // Questo distrugge tutto (ingredienti, formaggio rovinato) e fa ripartire il gioco pulito.

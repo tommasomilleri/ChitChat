@@ -43,7 +43,12 @@ public class GameManager : MonoBehaviour
     public void DecreaseGlobalQuality(int damage)
     {
         currentQuality -= damage;
-
+        // Il Pugno Visivo: ogni errore in ogni livello fa tremare lo schermo e ferma il tempo!
+        if (GameFeel.Instance != null)
+        {
+            GameFeel.Instance.Shake();
+            GameFeel.Instance.HitStop();
+        }
         if (currentQuality <= 0)
         {
             currentQuality = 0;
@@ -81,5 +86,16 @@ public class GameManager : MonoBehaviour
         {
             qualityBarContainer.SetActive(false);
         }
+    }
+    public void ResetQuality()
+    {
+        currentQuality = maxQuality;
+        if (globalQualityBar != null)
+        {
+            globalQualityBar.SetMaxQuality(maxQuality);
+            globalQualityBar.SetQuality(currentQuality);
+            globalQualityBar.gameObject.SetActive(false);
+        }
+        if (endingPanel != null) endingPanel.SetActive(false);
     }
 }

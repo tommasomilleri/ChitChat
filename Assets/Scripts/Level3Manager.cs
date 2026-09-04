@@ -5,7 +5,7 @@ using TMPro;
 public class Level3Manager : MonoBehaviour
 {
     [Header("Recipe Settings")]
-    public string[] correctOrder = { "Milk", "Rennet", "Salt", "Annatto" };
+    [SerializeField] private string[] correctOrder = { "Starter Culture", "Rennet", "Salt", "Annatto" };
     private int currentStep = 0;
 
     [Header("Pot Visuals")]

@@ -1,9 +1,17 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Collections;
 
 public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    // [potState, zonaCorrente] -> zonaTarget. CONTRATTO COL MANUALE HTML.
+    private static readonly int[,] TargetTable = {
+        {2, 0, 1},   // pentola vuota
+        {1, 2, 0},   // vapore
+        {0, 1, 2}    // bolle
+    };
+    public int outOfZonePenalty = 5;
     [Header("Visual Settings (Termometro Realistico)")]
     public Gradient gradient;
     public Image thermometerFill;
@@ -152,6 +160,8 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
                 if (currentErrorTime >= errorTolerance)
                 {
                     currentErrorTime = 0f;
+                    if (GameManager.instance != null)
+                        GameManager.instance.DecreaseGlobalQuality(outOfZonePenalty);
                 }
             }
         }
@@ -244,25 +254,9 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
         if (currentFillAmount <= 0.33f) startingColumn = 0;
         else if (currentFillAmount <= 0.66f) startingColumn = 1;
         else startingColumn = 2;
-
-        if (potState == 0) // Pentola Vuota
-        {
-            if (startingColumn == 0) targetZone = 2;
-            else if (startingColumn == 1) targetZone = 0;
-            else if (startingColumn == 2) targetZone = 1;
-        }
-        else if (potState == 1) // Vapore
-        {
-            if (startingColumn == 0) targetZone = 1;
-            else if (startingColumn == 1) targetZone = 2;
-            else if (startingColumn == 2) targetZone = 0;
-        }
-        else if (potState == 2) // Bolle
-        {
-            if (startingColumn == 0) targetZone = 0;
-            else if (startingColumn == 1) targetZone = 1;
-            else if (startingColumn == 2) targetZone = 2;
-        }
+        // Incrocia lo stato della pentola (Riga) e il topo attuale (Colonna) 
+        // leggendo la soluzione direttamente dalla Matrice, come da manuale.
+        targetZone = TargetTable[potState, startingColumn];
     }
 
     // =========================================================
@@ -323,13 +317,17 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
         if (check != null) check.SetActive(true);
         if (audioSource != null) audioSource.Stop();
         if (clockAudioSource != null) clockAudioSource.Stop();
-        Invoke(nameof(GoToNextLevel), 1.5f);
+        StartCoroutine(GoToNextLevelAfter(1.5f));
     }
 
     void GoToNextLevel()
     {
-        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         if (NextLevel != null) NextLevel.SetActive(true);
         if (CurrentLevel != null) CurrentLevel.SetActive(false);
+    }
+    IEnumerator GoToNextLevelAfter(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        GoToNextLevel();
     }
 }

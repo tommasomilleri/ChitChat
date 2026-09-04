@@ -4,8 +4,9 @@ using System.Collections;
 
 public class Level4Manager : MonoBehaviour
 {
+
     [Header("Co-op Sequence")]
-    public string[] correctSequence = { "drain", "press", "flip", "press", "flip" };
+    [SerializeField] private string[] correctSequence = { "drain", "press", "flip", "press", "flip" };
     private int currentStep = 0;
 
     [Header("Penalty Settings")]
@@ -291,5 +292,9 @@ public class Level4Manager : MonoBehaviour
     {
         if (NextLevel != null) NextLevel.SetActive(true);
         if (CurrentLevel != null) CurrentLevel.SetActive(false);
+    }
+    void OnDisable()
+    {
+        StopAllCoroutines();
     }
 }

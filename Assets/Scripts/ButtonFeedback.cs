@@ -60,8 +60,13 @@ public class ButtonFeedback : MonoBehaviour, IPointerEnterHandler, IPointerExitH
                 ? originalIconRotation * Quaternion.Euler(0, 0, hoverRotationAngle)
                 : originalIconRotation;
 
-            // Usiamo unscaledDeltaTime così gira anche se il gioco è in pausa!
-            iconToRotate.localRotation = Quaternion.Lerp(iconToRotate.localRotation, targetRotation, Time.unscaledDeltaTime * rotationSpeed);
+            // Early-out: ruota solo se c'è una differenza visibile (risparmia performance!)
+            if (Quaternion.Angle(iconToRotate.localRotation, targetRotation) > 0.1f)
+            {
+                iconToRotate.localRotation = Quaternion.Lerp(
+                    iconToRotate.localRotation, targetRotation,
+                    Time.unscaledDeltaTime * rotationSpeed);
+            }
         }
     }
 

@@ -15,10 +15,10 @@ public class MenuManager : MonoBehaviour
 
     void Start()
     {
-        // 1. Nasconde il Quality Meter appena si apre il menu
-        if (CheeseQualityManager.Instance != null && CheeseQualityManager.Instance.qualityBar != null)
+        // 1. Nasconde il Quality Meter appena si apre il menu usando il NUOVO GameManager
+        if (GameManager.instance != null && GameManager.instance.qualityBarContainer != null)
         {
-            CheeseQualityManager.Instance.qualityBar.gameObject.SetActive(false);
+            GameManager.instance.qualityBarContainer.SetActive(false);
         }
 
         // 2. FORZATURA DI SICUREZZA: Assicura che al riavvio della scena ci sia solo lo StartMenu
@@ -63,8 +63,6 @@ public class MenuManager : MonoBehaviour
         Debug.Log("Player 1 (Reader) selected. Opening PDF...");
         OpenPlayer1PDF();
         // IMPORTANT: We deliberately DO NOT hide the PlayerSelectPage here!
-        // This way, players on the same PC can open the manual first, 
-        // and the menu stays visible so they can then click Player 2 to start the game.
     }
 
     // PLAYER 2 (The Chef)
@@ -74,7 +72,7 @@ public class MenuManager : MonoBehaviour
 
         if (PlayerSelectPage != null)
         {
-            PlayerSelectPage.SetActive(false); // Hides the menu only when the game actually starts
+            PlayerSelectPage.SetActive(false);
         }
 
         if (Lvl1 != null)
@@ -85,14 +83,11 @@ public class MenuManager : MonoBehaviour
         {
             Debug.LogWarning("Lvl1 is missing! Drag it into the MenuManager Inspector.");
         }
-        if (CheeseQualityManager.Instance != null && CheeseQualityManager.Instance.qualityBar != null)
+
+        // Riaccende la barra della qualità usando il NUOVO GameManager
+        if (GameManager.instance != null && GameManager.instance.qualityBarContainer != null)
         {
-            CheeseQualityManager.Instance.qualityBar.gameObject.SetActive(true);
-        }
-        // Sblocca la possibilità di aprire il menu di pausa!
-        if (PauseMenuManager.Instance != null)
-        {
-            PauseMenuManager.Instance.canPause = true;
+            GameManager.instance.qualityBarContainer.SetActive(true);
         }
     }
 
@@ -100,14 +95,12 @@ public class MenuManager : MonoBehaviour
     {
         try
         {
-            // Makes sure the path works perfectly regardless of the operating system
             string pdfPath = Path.Combine(Application.streamingAssetsPath, "ChitRecipe.pdf");
             string pdfURL = new Uri(pdfPath).AbsoluteUri;
             Application.OpenURL(pdfURL);
         }
         catch (Exception e)
         {
-            // If the PDF is missing or fails to open, it logs the error without crashing the game
             Debug.LogError("Failed to open the PDF recipe! Error: " + e.Message);
         }
     }

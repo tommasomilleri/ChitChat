@@ -7,6 +7,7 @@ public class DraggableCheese : MonoBehaviour,
     IDragHandler,
     IEndDragHandler
 {
+    private Canvas rootCanvas;
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
     private Vector2 originalPosition;
@@ -37,6 +38,7 @@ public class DraggableCheese : MonoBehaviour,
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
         originalPosition = rectTransform.anchoredPosition;
+            rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -52,7 +54,7 @@ public class DraggableCheese : MonoBehaviour,
         if (isFalling) return;
 
         rectTransform.anchoredPosition +=
-            eventData.delta / GetComponentInParent<Canvas>().scaleFactor;
+            eventData.delta / rootCanvas.scaleFactor;
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -137,5 +139,11 @@ public class DraggableCheese : MonoBehaviour,
         rectTransform.anchoredPosition = originalPosition;
         canvasGroup.blocksRaycasts = true;
         isFalling = false;
+    }
+    void OnDisable()
+    {
+        StopAllCoroutines();
+        isFalling = false;
+        if (GetComponent<CanvasGroup>() != null) GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
 }

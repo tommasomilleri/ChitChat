@@ -9,12 +9,9 @@ public class Shelfslot : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
+        if (eventData.pointerDrag == null) return;
         DraggableCheese cheese =
             eventData.pointerDrag.GetComponent<DraggableCheese>();
-
-        if (cheese != null)
-        {
-            level5Manager.CheckPosition(slotNumber);
-        }
+        if (cheese == null || level5Manager == null) return;
     }
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
-using UnityEngine.Events; // <-- Aggiunto per poter usare gli UnityEvent!
+using UnityEngine.Events;
 
 public class FakeLoadingScreen : MonoBehaviour
 {
@@ -15,6 +15,7 @@ public class FakeLoadingScreen : MonoBehaviour
     [Header("Loading Settings")]
     [Range(1f, 10f)] public float loadingDuration = 4f;
     public float iconRotationSpeed = -150f;
+    [SerializeField] float transitionDelay = 1.5f;
 
     [Header("Cheese Tips")]
     [TextArea(2, 4)]
@@ -26,7 +27,7 @@ public class FakeLoadingScreen : MonoBehaviour
 
     [Header("Transizione (Unity Event)")]
     [Tooltip("Collega qui la funzione PlayTransition() del tuo SceneTransitioner")]
-    public UnityEvent onTransitionStart; // <-- Questo è il nostro nuovo "pulsante" vuoto
+    public UnityEvent onTransitionStart;
 
     // --- VARIABILI INTERNE ---
     private int currentTipIndex = 0;
@@ -39,8 +40,7 @@ public class FakeLoadingScreen : MonoBehaviour
         isTransitioning = false;
 
         if (loadingBar != null) loadingBar.value = 0f;
-        if (promptText != null) promptText.text = "Clicca o premi Spazio per il prossimo tip...";
-
+        if (promptText != null) promptText.text = "Click or press Space for the next tip...";
         ShuffleAndShowTip();
 
         StopAllCoroutines();
@@ -82,7 +82,7 @@ public class FakeLoadingScreen : MonoBehaviour
         if (loadingBar != null) loadingBar.value = 1f;
         isLoaded = true;
 
-        if (promptText != null) promptText.text = "Caricamento completato! Premi per continuare.";
+        if (promptText != null) promptText.text = "Loading complete! Press to continue.";
     }
 
     void ShowNextTip()
@@ -105,16 +105,12 @@ public class FakeLoadingScreen : MonoBehaviour
     void TriggerExitTransition()
     {
         isLoaded = false;
-        isTransitioning = true; // Chiudi a chiave
+        isTransitioning = true; // Chiudi a chiave l'input
 
-        // Se abbiamo configurato l'evento nell'Inspector, lo lancia. 
-        // Altrimenti fa il cambio netto classico.
         if (onTransitionStart != null && onTransitionStart.GetPersistentEventCount() > 0)
         {
-            onTransitionStart.Invoke(); // Questo fa partire le bolle magiche!
-
-            // Aspetta un istante per far chiudere lo schermo nero, poi cambia i pannelli
-            Invoke("SwitchPanels", 1.5f); // 1.5 secondi è il tempo standard di una transizione
+            onTransitionStart.Invoke();
+            StartCoroutine(SwitchAfter(transitionDelay));
         }
         else
         {
@@ -122,12 +118,22 @@ public class FakeLoadingScreen : MonoBehaviour
         }
     }
 
-    // Questa funzione deve essere PUBBLICA per poter essere richiamata dall'asset se vogliamo
     public void SwitchPanels()
     {
         if (nextLevelPanel != null) nextLevelPanel.SetActive(true);
         if (currentLoadingPanel != null) currentLoadingPanel.SetActive(false);
 
         isTransitioning = false;
+    }
+
+    void OnDisable()
+    {
+        StopAllCoroutines();
+    }
+
+    IEnumerator SwitchAfter(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        SwitchPanels();
     }
 }

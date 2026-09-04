@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PotDropZone : MonoBehaviour, IDropHandler
+public class ngredientDropZone : MonoBehaviour, IDropHandler
 {
     [Tooltip("Drag the GameObject holding the Level3Manager here")]
     public Level3Manager level3Manager;
