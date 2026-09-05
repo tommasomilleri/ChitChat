@@ -20,6 +20,7 @@ public class MenuManager : MonoBehaviour
         {
             GameManager.instance.qualityBarContainer.SetActive(false);
         }
+        Time.timeScale = 1.0f;
 
         // 2. FORZATURA DI SICUREZZA: Assicura che al riavvio della scena ci sia solo lo StartMenu
         if (StartPage != null) StartPage.SetActive(true);
@@ -101,6 +102,11 @@ public class MenuManager : MonoBehaviour
         {
             GameManager.instance.qualityBarContainer.SetActive(true);
         }
+        if (PauseMenuManager.Instance != null)
+        {
+            PauseMenuManager.Instance.canPause = true;
+        }
+
     }
 
     // AGGIORNAMENTO I1: Sostituito PDF con il sito web locale

@@ -5,11 +5,15 @@ public class DebugProbe : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            Debug.Log($"[PROBE] timeScale={Time.timeScale} | " +
-                      $"GameManager={(GameManager.instance != null ? "OK" : "NULL")} | " +
-                      $"qualityBar={(GameManager.instance != null && GameManager.instance.globalQualityBar != null ? "OK" : "NULL")} | " +
-                      $"GameFeel={(GameFeel.Instance != null ? "OK" : "NULL")} | " +
-                      $"EventSystem={(UnityEngine.EventSystems.EventSystem.current != null ? "OK" : "NULL")}");
+            string gm = (GameManager.instance != null) ? "OK" : "NULL";
+            string qb = (GameManager.instance != null && GameManager.instance.globalQualityBar != null) ? "OK" : "NULL";
+            string gf = (GameFeel.Instance != null) ? "OK" : "NULL";
+            string es = (UnityEngine.EventSystems.EventSystem.current != null) ? "OK" : "NULL";
+            Debug.Log("[PROBE] timeScale=" + Time.timeScale
+                + " | GameManager=" + gm
+                + " | qualityBar=" + qb
+                + " | GameFeel=" + gf
+                + " | EventSystem=" + es);
         }
     }
 }

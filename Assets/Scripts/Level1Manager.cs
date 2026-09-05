@@ -12,13 +12,23 @@ public class Level1Manager : MonoBehaviour
 
     void Start()
     {
-        // AGGIUNGI QUESTA RIGA: Riaccende la barra nel Livello 1
         if (GameManager.instance != null)
         {
-            if (GameManager.instance.qualityBarContainer != null) 
+            if (GameManager.instance.qualityBarContainer != null)
                 GameManager.instance.qualityBarContainer.SetActive(true);
-            if (GameManager.instance.globalQualityBar!=null)
-            GameManager.instance.globalQualityBar.gameObject.SetActive(true);
+            if (GameManager.instance.globalQualityBar != null)
+                GameManager.instance.globalQualityBar.gameObject.SetActive(true);
+        }
+        // COLLEGAMENTO VIA CODICE: bypassa gli OnClick serializzati corrotti
+        if (CurrentLevel != null)
+        {
+            UnityEngine.UI.Button[] cows = CurrentLevel.GetComponentsInChildren<UnityEngine.UI.Button>(true);
+            for (int i = 0; i < cows.Length; i++)
+            {
+                int num = i + 1;
+                cows[i].onClick.AddListener(delegate { selectImage(num); });
+            }
+            Debug.Log("MUCCHE COLLEGATE VIA CODICE: " + cows.Length);
         }
     }
     // Triggered by the UI Buttons

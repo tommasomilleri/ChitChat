@@ -35,7 +35,15 @@ public class PauseMenuManager : MonoBehaviour
             return;
         }
     }
+    void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+            Time.timeScale = 1f;
+        }
 
+    }
     void Start()
     {
         if (pauseMenuContainer != null)
@@ -67,6 +75,11 @@ public class PauseMenuManager : MonoBehaviour
 
     public void PauseGame()
     {
+        if (pauseMenuContainer == null || menuPanel==null)
+        {
+            Debug.LogWarning("[PauseMenu] Riferimenti UI mancanti: pausa annullata.");
+            return;
+        }
         isPaused = true;
         pauseMenuContainer.SetActive(true);
         Time.timeScale = 0f;
@@ -86,6 +99,7 @@ public class PauseMenuManager : MonoBehaviour
 
     public void ResumeGame()
     {
+
         isPaused = false;
         Time.timeScale = 1f;
         // Fa ripartire la musica dal punto esatto in cui si era fermata
@@ -97,13 +111,18 @@ public class PauseMenuManager : MonoBehaviour
         {
             GameManager.instance.qualityBarContainer.SetActive(true); // Usa true per ResumeGame
         }
-
+        if (menuPanel == null)
+        {
+            if (pauseMenuContainer != null) pauseMenuContainer.SetActive(false);
+            return;
+        }
         if (slideCoroutine != null) StopCoroutine(slideCoroutine);
         slideCoroutine = StartCoroutine(SlideMenu(hiddenYPos, true));
     }
 
     public void QuitToMainMenu()
     {
+        Time.timeScale = 1f;
         // 1. Riporta il tempo alla normalità, altrimenti la nuova scena si caricherebbe in pausa!
         if (GameManager.instance != null) GameManager.instance.ResetQuality();
         canPause = false;
@@ -145,13 +164,12 @@ public class PauseMenuManager : MonoBehaviour
         int lvlIndex = GameManager.instance.currentLevel;
         GameObject activeLevelGO = null;
 
-        // Trova il GameObject del livello attualmente in corso in base all'indice
-        // (Assumiamo che tu abbia i livelli nella scena nominati in qualche modo o accessibili. 
-        // Il modo più sicuro è cercare gli oggetti attivi)
-        LevelSetup[] allLevels = FindObjectsByType<LevelSetup>(FindObjectsSortMode.None);
+
+
+        LevelSetup[] allLevels = FindObjectsByType<LevelSetup>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (LevelSetup lvl in allLevels)
         {
-            if (lvl.levelIndex == lvlIndex && lvl.gameObject.activeSelf)
+            if (lvl.levelIndex == lvlIndex && lvl.gameObject.activeInHierarchy)
             {
                 activeLevelGO = lvl.gameObject;
                 break;
@@ -168,6 +186,7 @@ public class PauseMenuManager : MonoBehaviour
         else
         {
             Debug.LogWarning("Impossibile trovare il livello attivo per il Replay!");
+            ResumeGame();
         }
     }
 }

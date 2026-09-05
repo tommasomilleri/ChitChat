@@ -30,16 +30,19 @@ public class GameManager : MonoBehaviour
     public FakeLoadingScreen globalLoadingScreen; // <-- AGGIUNGI QUESTA!
     void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-            currentQuality = maxQuality;
-        }
-        else
+        if (instance != null && instance != this)
         {
             Destroy(gameObject);
+            return;
         }
+        instance = this;
+        // DontDestroyOnLoad RIMOSSO: il gioco vive in una sola scena a pannelli,
+        // e questo era il meccanismo che creava i GameManager fantasma.
+        currentQuality = maxQuality;
+    }
+    void OnDestroy()
+    {
+        if (instance == this) instance = null;
     }
 
     void Start()
