@@ -43,6 +43,8 @@ public class PostFX : MonoBehaviour
         noiseImage.color = new Color(1, 1, 1, noiseIntensity);
 
         StartCoroutine(AnimateNoise());
+        if (GameManager.instance != null && GameManager.instance.qualityBarContainer != null)
+            GameManager.instance.qualityBarContainer.transform.SetAsLastSibling();
     }
 
     Image CreateOverlayImage(string objName, Transform parent)

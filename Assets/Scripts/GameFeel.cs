@@ -53,10 +53,13 @@ public class GameFeel : MonoBehaviour
         yield return new WaitForSecondsRealtime(dur);
 
         // Se il giocatore non ha aperto il menu di pausa nel frattempo, ripristina il tempo
-        if (PauseMenuManager.Instance != null && !PauseMenuManager.Instance.isPaused)
-        {
-            Time.timeScale = 1f;
-        }
+        bool menuOpen = PauseMenuManager.Instance != null && PauseMenuManager.Instance.isPaused;
+        if (!menuOpen) Time.timeScale = 1f;
+        isHitStopping = false;
+    }
+    void OnDisable()
+    {
+        if (isHitStopping) Time.timeScale = 1f;
         isHitStopping = false;
     }
 }

@@ -1470,13 +1470,13 @@ MonoBehaviour:
   currentLevel: 1
   runStartTime: 0
   globalQualityBar: {fileID: 967985709}
-  qualityBarContainer: {fileID: 1872811378}
+  qualityBarContainer: {fileID: 115455077}
   endingPanel: {fileID: 1723643635}
   onPlayTransition:
     m_PersistentCalls:
       m_Calls: []
   transitionDelay: 1.5
-  globalLoadingScreen: {fileID: 0}
+  globalLoadingScreen: {fileID: 657403730}
 --- !u!4 &427201695
 Transform:
   m_ObjectHideFlags: 0
@@ -5729,11 +5729,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1826579129}
   m_CullTransparentMesh: 1
---- !u!1 &1872811378 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7840121918336563454, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
-  m_PrefabInstance: {fileID: 2905204187851996418}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1935687773
 GameObject:
   m_ObjectHideFlags: 0

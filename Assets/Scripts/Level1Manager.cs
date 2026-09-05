@@ -13,8 +13,11 @@ public class Level1Manager : MonoBehaviour
     void Start()
     {
         // AGGIUNGI QUESTA RIGA: Riaccende la barra nel Livello 1
-        if (GameManager.instance != null && GameManager.instance.globalQualityBar != null)
+        if (GameManager.instance != null)
         {
+            if (GameManager.instance.qualityBarContainer != null) 
+                GameManager.instance.qualityBarContainer.SetActive(true);
+            if (GameManager.instance.globalQualityBar!=null)
             GameManager.instance.globalQualityBar.gameObject.SetActive(true);
         }
     }
