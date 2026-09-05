@@ -59,7 +59,8 @@ public class GameFeel : MonoBehaviour
     }
     void OnDisable()
     {
-        if (isHitStopping) Time.timeScale = 1f;
+        bool menuOpen = PauseMenuManager.Instance != null && PauseMenuManager.Instance.isPaused;
+        if (isHitStopping && !menuOpen) Time.timeScale = 1f;
         isHitStopping = false;
     }
 }

@@ -795,90 +795,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6141989287793429995, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
   m_PrefabInstance: {fileID: 2905204187851996418}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &216893003
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2541666409870520583, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
-      propertyPath: targetCamera
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2541666409870520583, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
-      propertyPath: defaultTransition
-      value: 
-      objectReference: {fileID: 11400000, guid: 97fbd29cb88501f418dba224df37fe8b, type: 2}
-    - target: {fileID: 2541666409870520583, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
-      propertyPath: canvasSortingOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4834223626572779385, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.5029297
-      objectReference: {fileID: 0}
-    - target: {fileID: 4834223626572779385, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.12677002
-      objectReference: {fileID: 0}
-    - target: {fileID: 4834223626572779385, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4834223626572779385, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4834223626572779385, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4834223626572779385, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4834223626572779385, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4834223626572779385, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4834223626572779385, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4834223626572779385, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7370688103532160360, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
-      propertyPath: m_Name
-      value: SceneTransitioner
-      objectReference: {fileID: 0}
-    - target: {fileID: 7370688103532160360, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
---- !u!114 &216893006 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2541666409870520583, guid: 9e231ba446800aa4ebe635b040ef13bd, type: 3}
-  m_PrefabInstance: {fileID: 216893003}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77b525215f79aa7468598d85400f45f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &244628393
 GameObject:
   m_ObjectHideFlags: 0
@@ -1845,7 +1761,6 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
-  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1971,18 +1886,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &519420033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c67206a2eb7bfa49b0e960ba40cd7a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CameraSlide
 --- !u!1 &524423199 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7742592460725550080, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
@@ -2015,6 +1918,7 @@ GameObject:
   - component: {fileID: 534810882}
   - component: {fileID: 534810885}
   - component: {fileID: 534810887}
+  - component: {fileID: 534810888}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2096,7 +2000,7 @@ MonoBehaviour:
   onPlayTransition:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 216893006}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PixeLadder.EasyTransition.SceneTransitioner, Assembly-CSharp
         m_MethodName: PlayTransition
         m_Mode: 1
@@ -2126,6 +2030,18 @@ MonoBehaviour:
   masterSlider: {fileID: 1959106039}
   musicSlider: {fileID: 596388614}
   sfxSlider: {fileID: 667127762}
+--- !u!114 &534810888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 534810881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b69e1e4835367ad4c95f1b17670646d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!1 &541530284
 GameObject:
   m_ObjectHideFlags: 0
@@ -7483,6 +7399,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 534810882}
+    - target: {fileID: 6660829659326518111, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: selectImage
+      objectReference: {fileID: 0}
+    - target: {fileID: 6660829659326518111, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Level1Manager, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 6720213939863020216, guid: 8b1a436d7e41f7d419aadc7fbbfc1dd0, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -8075,4 +7999,3 @@ SceneRoots:
   - {fileID: 790351704}
   - {fileID: 2067712065}
   - {fileID: 427201695}
-  - {fileID: 216893003}
