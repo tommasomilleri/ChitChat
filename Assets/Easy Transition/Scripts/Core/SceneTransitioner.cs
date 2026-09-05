@@ -7,10 +7,6 @@
     using UnityEngine.UI;
     using UnityEngine.Events;
 
-    /// <summary>
-    /// The global singleton manager that controls the scene transition lifecycle.
-    /// Handles asynchronous scene loading, automatic UI blocking, and VR camera updates.
-    /// </summary>
     [DisallowMultipleComponent]
     public class SceneTransitioner : MonoBehaviour
     {
@@ -47,9 +43,6 @@
         private Image transitionImageInstance;
         private CanvasGroup canvasGroup;
 
-        /// <summary>
-        /// Returns true if a transition is currently in progress.
-        /// </summary>
         public bool IsTransitioning { get; private set; }
 
         private static readonly int RectSizeID = Shader.PropertyToID("_RectSize");
@@ -96,12 +89,18 @@
 
             transitionImageInstance = Instantiate(transitionImagePrefab, canvasGO.transform);
 
+            // --- LA MAGIA PER FREGARE LO SHADER BUGGATO ---
             RectTransform rectT = transitionImageInstance.rectTransform;
-            rectT.anchorMin = Vector2.zero;
-            rectT.anchorMax = Vector2.one;
-            // Extremely large base scale ensures coverage during Canvas scaling calculations
-            rectT.sizeDelta = new Vector2(6000f, 6000f);
+
+            // 1. Ancoriamo il perno al CENTRO ASSOLUTO dello schermo
+            rectT.anchorMin = new Vector2(0.5f, 0.5f);
+            rectT.anchorMax = new Vector2(0.5f, 0.5f);
+            rectT.pivot = new Vector2(0.5f, 0.5f);
             rectT.anchoredPosition = Vector2.zero;
+
+            // 2. MANTENIAMO I 600 PIXEL. Se mettiamo numeri diversi, 
+            // lo shader va in panico e disegna nell'angolo.
+            rectT.sizeDelta = new Vector2(600f, 600f);
 
             transitionImageInstance.gameObject.SetActive(false);
         }
@@ -111,28 +110,24 @@
             UpdateVRCamera();
         }
 
-        /// <summary>
-        /// Starts a transition and loads a new scene asynchronously by its string name.
-        /// </summary>
         public void LoadScene(string sceneName, TransitionEffect effect = null)
         {
             StartTransitionRoutine(sceneName, -1, null, effect);
         }
 
-        /// <summary>
-        /// Starts a transition and loads a new scene asynchronously by its Build Index.
-        /// </summary>
         public void LoadScene(int buildIndex, TransitionEffect effect = null)
         {
             StartTransitionRoutine(null, buildIndex, null, effect);
         }
 
-        /// <summary>
-        /// Plays a transition without loading a scene. Executes a custom C# Action (like teleportation) at the midpoint.
-        /// </summary>
         public void PlayTransition(Action onMidPoint = null, TransitionEffect effect = null)
         {
             StartTransitionRoutine(null, -1, onMidPoint, effect);
+        }
+
+        public void PlayTransition()
+        {
+            StartTransitionRoutine(null, -1, null, defaultTransition);
         }
 
         private void StartTransitionRoutine(string sceneName, int sceneIndex, Action midPointAction, TransitionEffect effect)
@@ -157,14 +152,27 @@
             if (canvasGroup != null && blockUIInteraction)
                 canvasGroup.blocksRaycasts = true;
 
-            // Reset image scale to standard screen size for accurate shader UV calculations
-            transitionImageInstance.rectTransform.sizeDelta = new Vector2(600f, 600f);
+            Canvas.ForceUpdateCanvases();
+
+            // --- 3. IL CALCOLO DELLO ZOOM DINAMICO ---
+            // Troviamo il lato più lungo dello schermo...
+            float maxDim = Mathf.Max(Screen.width, Screen.height);
+            if (transitionCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
+            {
+                Rect canvasRect = transitionCanvas.GetComponent<RectTransform>().rect;
+                maxDim = Mathf.Max(canvasRect.width, canvasRect.height);
+            }
+            if (maxDim <= 0) maxDim = 2000f; // Paracadute di emergenza
+
+            // ...e ingrandiamo l'immagine di 600px finché non copre tutto in sicurezza (* 2f per gli angoli)
+            float requiredScale = (maxDim / 600f) * 2f;
+            transitionImageInstance.rectTransform.localScale = new Vector3(requiredScale, requiredScale, 1f);
 
             OnTransitionStart?.Invoke();
 
             Material materialInstance = new Material(effect.transitionMaterial);
 
-            Canvas.ForceUpdateCanvases();
+            // Lo shader riceve 600x600 e funziona alla perfezione.
             Rect rect = transitionImageInstance.rectTransform.rect;
             materialInstance.SetVector(RectSizeID, new Vector4(rect.width, rect.height, 0, 0));
 
@@ -174,9 +182,6 @@
             // --- FADE OUT ---
             yield return effect.AnimateOut(transitionImageInstance);
             OnFadeOutComplete?.Invoke();
-
-            // Hide potential load-flashes by scaling the black screen massively
-            transitionImageInstance.rectTransform.sizeDelta = new Vector2(6000f, 6000f);
 
             // --- SCENE LOAD ---
             if (!string.IsNullOrEmpty(sceneName) || sceneIndex >= 0)
@@ -199,9 +204,6 @@
             else
                 yield return null;
 
-            // Restore correct scale for the Fade-In shader math
-            transitionImageInstance.rectTransform.sizeDelta = new Vector2(600f, 600f);
-
             OnFadeInStart?.Invoke();
 
             // --- FADE IN ---
@@ -216,9 +218,6 @@
             OnTransitionFinished?.Invoke();
         }
 
-        /// <summary>
-        /// Ensures the Canvas remains attached to the current main camera, crucial for VR setups after a scene loads.
-        /// </summary>
         private void UpdateVRCamera()
         {
             if (transitionCanvas != null && (canvasRenderMode == RenderMode.ScreenSpaceCamera || canvasRenderMode == RenderMode.WorldSpace))
@@ -227,16 +226,12 @@
                 if (cam != null && transitionCanvas.worldCamera != cam)
                 {
                     transitionCanvas.worldCamera = cam;
-                    // Push the canvas just beyond the near clip plane to prevent eye-clipping in VR
                     transitionCanvas.planeDistance = cam.nearClipPlane + 0.01f;
                     Canvas.ForceUpdateCanvases();
                 }
             }
         }
 
-        /// <summary>
-        /// A helper method to easily play a one-shot audio clip globally, ensuring it isn't destroyed by scene loads.
-        /// </summary>
         public void PlayGlobalSound(AudioClip clip)
         {
             if (clip != null && TryGetComponent(out AudioSource source)) source.PlayOneShot(clip);

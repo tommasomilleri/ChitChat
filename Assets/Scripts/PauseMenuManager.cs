@@ -95,7 +95,7 @@ public class PauseMenuManager : MonoBehaviour
         }
         if (GameManager.instance != null && GameManager.instance.qualityBarContainer != null)
         {
-            GameManager.instance.qualityBarContainer.SetActive(false); // Usa true per ResumeGame
+            GameManager.instance.qualityBarContainer.SetActive(true); // Usa true per ResumeGame
         }
 
         if (slideCoroutine != null) StopCoroutine(slideCoroutine);
@@ -136,6 +136,38 @@ public class PauseMenuManager : MonoBehaviour
         if (isSlidingOut && pauseMenuContainer != null)
         {
             pauseMenuContainer.SetActive(false);
+        }
+    }
+    public void ReplayCurrentLevel()
+    {
+        if (GameManager.instance == null) return;
+
+        int lvlIndex = GameManager.instance.currentLevel;
+        GameObject activeLevelGO = null;
+
+        // Trova il GameObject del livello attualmente in corso in base all'indice
+        // (Assumiamo che tu abbia i livelli nella scena nominati in qualche modo o accessibili. 
+        // Il modo più sicuro è cercare gli oggetti attivi)
+        LevelSetup[] allLevels = FindObjectsByType<LevelSetup>(FindObjectsSortMode.None);
+        foreach (LevelSetup lvl in allLevels)
+        {
+            if (lvl.levelIndex == lvlIndex && lvl.gameObject.activeSelf)
+            {
+                activeLevelGO = lvl.gameObject;
+                break;
+            }
+        }
+
+        if (activeLevelGO != null)
+        {
+            // Spegne e riaccende il livello. Questo forza Unity a chiamare di nuovo "OnEnable", resettando tutto!
+            activeLevelGO.SetActive(false);
+            activeLevelGO.SetActive(true);
+            ResumeGame(); // Togli la pausa
+        }
+        else
+        {
+            Debug.LogWarning("Impossibile trovare il livello attivo per il Replay!");
         }
     }
 }

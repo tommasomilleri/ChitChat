@@ -33,7 +33,16 @@ public class MenuManager : MonoBehaviour
     public void StartGame()
     {
         if (StartPage != null) StartPage.SetActive(false);
-        if (StoryPage != null) StoryPage.SetActive(true);
+
+        // AGGIORNAMENTO H5: Salto della storia per chi ha già giocato
+        if (PlayerPrefs.GetInt("storySeen", 0) == 1)
+        {
+            if (PlayerSelectPage != null) PlayerSelectPage.SetActive(true);
+        }
+        else
+        {
+            if (StoryPage != null) StoryPage.SetActive(true);
+        }
     }
 
     // NEXT BUTTON ON STORY PAGE
@@ -41,6 +50,9 @@ public class MenuManager : MonoBehaviour
     {
         if (StoryPage != null) StoryPage.SetActive(false);
         if (PlayerSelectPage != null) PlayerSelectPage.SetActive(true);
+
+        // Salva in memoria che il giocatore ha letto la storia
+        PlayerPrefs.SetInt("storySeen", 1);
     }
 
     // TUTORIAL BUTTON
@@ -60,8 +72,8 @@ public class MenuManager : MonoBehaviour
     // PLAYER 1 (The Reader)
     public void SelectPlayer1()
     {
-        Debug.Log("Player 1 (Reader) selected. Opening PDF...");
-        OpenPlayer1PDF();
+        Debug.Log("Player 1 (Reader) selected. Opening HTML Manual...");
+        OpenPlayer1Manual();
         // IMPORTANT: We deliberately DO NOT hide the PlayerSelectPage here!
     }
 
@@ -91,17 +103,19 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    void OpenPlayer1PDF()
+    // AGGIORNAMENTO I1: Sostituito PDF con il sito web locale
+    void OpenPlayer1Manual()
     {
         try
         {
-            string pdfPath = Path.Combine(Application.streamingAssetsPath, "ChitRecipe.pdf");
-            string pdfURL = new Uri(pdfPath).AbsoluteUri;
-            Application.OpenURL(pdfURL);
+            // Cerca il file index.html dentro la cartella "manual" in StreamingAssets
+            string manualPath = Path.Combine(Application.streamingAssetsPath, "manual/index.html");
+            string manualURL = new Uri(manualPath).AbsoluteUri;
+            Application.OpenURL(manualURL);
         }
         catch (Exception e)
         {
-            Debug.LogError("Failed to open the PDF recipe! Error: " + e.Message);
+            Debug.LogError("Failed to open the HTML manual! Error: " + e.Message);
         }
     }
 

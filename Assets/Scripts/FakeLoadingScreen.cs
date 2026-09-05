@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
-using UnityEngine.Events;
 
 public class FakeLoadingScreen : MonoBehaviour
 {
@@ -15,19 +14,14 @@ public class FakeLoadingScreen : MonoBehaviour
     [Header("Loading Settings")]
     [Range(1f, 10f)] public float loadingDuration = 4f;
     public float iconRotationSpeed = -150f;
-    [SerializeField] float transitionDelay = 1.5f;
 
     [Header("Cheese Tips")]
     [TextArea(2, 4)]
     public string[] cheeseTips;
 
     [Header("Level Transition")]
-    public GameObject currentLoadingPanel;
+    [Tooltip("Trascina qui il livello che deve aprirsi DOPO questo caricamento")]
     public GameObject nextLevelPanel;
-
-    [Header("Transizione (Unity Event)")]
-    [Tooltip("Collega qui la funzione PlayTransition() del tuo SceneTransitioner")]
-    public UnityEvent onTransitionStart;
 
     // --- VARIABILI INTERNE ---
     private int currentTipIndex = 0;
@@ -49,23 +43,13 @@ public class FakeLoadingScreen : MonoBehaviour
 
     void Update()
     {
-        if (loadingIcon != null)
-        {
-            loadingIcon.Rotate(0, 0, iconRotationSpeed * Time.deltaTime);
-        }
-
+        if (loadingIcon != null) loadingIcon.Rotate(0, 0, iconRotationSpeed * Time.deltaTime);
         if (isTransitioning) return;
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
         {
-            if (!isLoaded)
-            {
-                ShowNextTip();
-            }
-            else
-            {
-                TriggerExitTransition();
-            }
+            if (!isLoaded) ShowNextTip();
+            else TriggerExitTransition();
         }
     }
 
@@ -81,14 +65,12 @@ public class FakeLoadingScreen : MonoBehaviour
 
         if (loadingBar != null) loadingBar.value = 1f;
         isLoaded = true;
-
         if (promptText != null) promptText.text = "Loading complete! Press to continue.";
     }
 
     void ShowNextTip()
     {
         if (cheeseTips == null || cheeseTips.Length == 0) return;
-
         currentTipIndex = (currentTipIndex + 1) % cheeseTips.Length;
         if (tipText != null) tipText.text = cheeseTips[currentTipIndex];
     }
@@ -105,35 +87,24 @@ public class FakeLoadingScreen : MonoBehaviour
     void TriggerExitTransition()
     {
         isLoaded = false;
-        isTransitioning = true; // Chiudi a chiave l'input
+        isTransitioning = true; // Chiude a chiave l'input
 
-        if (onTransitionStart != null && onTransitionStart.GetPersistentEventCount() > 0)
+        // IL CARICAMENTO FINISCE: Chiede al GameManager di fare il cambio!
+        if (GameManager.instance != null)
         {
-            onTransitionStart.Invoke();
-            StartCoroutine(SwitchAfter(transitionDelay));
+            // La magia: Usa "this.gameObject" (se stesso) senza aver bisogno di variabili extra!
+            GameManager.instance.TransitionBetweenPanels(this.gameObject, nextLevelPanel);
         }
         else
         {
-            SwitchPanels();
+            // Fallback d'emergenza se manca il GameManager
+            if (nextLevelPanel != null) nextLevelPanel.SetActive(true);
+            this.gameObject.SetActive(false);
         }
-    }
-
-    public void SwitchPanels()
-    {
-        if (nextLevelPanel != null) nextLevelPanel.SetActive(true);
-        if (currentLoadingPanel != null) currentLoadingPanel.SetActive(false);
-
-        isTransitioning = false;
     }
 
     void OnDisable()
     {
         StopAllCoroutines();
-    }
-
-    IEnumerator SwitchAfter(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        SwitchPanels();
     }
 }

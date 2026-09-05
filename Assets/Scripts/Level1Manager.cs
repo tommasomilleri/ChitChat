@@ -53,8 +53,20 @@ public class Level1Manager : MonoBehaviour
 
     void GoToNextLevel()
     {
-        if (NextLevel != null) NextLevel.SetActive(true);
-        if (CurrentLevel != null) CurrentLevel.SetActive(false);
+        // Sblocca il cursore per sicurezza
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+
+        // ECCO IL COLLEGAMENTO AL PONTE UNIVERSALE!
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.TransitionToNextLevel(CurrentLevel, NextLevel);
+        }
+        else
+        {
+            // Fallback di emergenza
+            if (NextLevel != null) NextLevel.SetActive(true);
+            if (CurrentLevel != null) CurrentLevel.SetActive(false);
+        }
     }
     private System.Collections.IEnumerator JumpJoy(RectTransform target)
     {

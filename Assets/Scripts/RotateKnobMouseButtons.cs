@@ -322,8 +322,12 @@ public class RotateKnobMouseButtons : MonoBehaviour, IPointerClickHandler, IPoin
 
     void GoToNextLevel()
     {
-        if (NextLevel != null) NextLevel.SetActive(true);
-        if (CurrentLevel != null) CurrentLevel.SetActive(false);
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto); // Se c'era un cursore, lo sblocca
+        if (GameManager.instance != null)
+        {
+            // Manda il livello al vigile urbano (GameManager) che gestirà il ponte!
+            GameManager.instance.TransitionToNextLevel(CurrentLevel, NextLevel);
+        }
     }
     IEnumerator GoToNextLevelAfter(float delay)
     {
