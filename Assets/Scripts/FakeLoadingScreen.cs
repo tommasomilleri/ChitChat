@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
-
+using PixeLadder.EasyTransition;
 public class FakeLoadingScreen : MonoBehaviour
 {
     [Header("UI Elements")]
@@ -87,17 +87,22 @@ public class FakeLoadingScreen : MonoBehaviour
     void TriggerExitTransition()
     {
         isLoaded = false;
-        isTransitioning = true; // Chiude a chiave l'input
+        isTransitioning = true; // Chiude l'input
 
-        // IL CARICAMENTO FINISCE: Chiede al GameManager di fare il cambio!
-        if (GameManager.instance != null)
+        if (SimpleCellularTransition.Instance != null)
         {
-            // La magia: Usa "this.gameObject" (se stesso) senza aver bisogno di variabili extra!
+            // FASE 2: Scambia le scene al buio, poi rimpicciolisce le bolle svelando il livello
+            if (nextLevelPanel != null) nextLevelPanel.SetActive(true);
+            this.gameObject.SetActive(false);
+
+            SimpleCellularTransition.Instance.PlayIn(null);
+        }
+        else if (GameManager.instance != null)
+        {
             GameManager.instance.TransitionBetweenPanels(this.gameObject, nextLevelPanel);
         }
         else
         {
-            // Fallback d'emergenza se manca il GameManager
             if (nextLevelPanel != null) nextLevelPanel.SetActive(true);
             this.gameObject.SetActive(false);
         }
