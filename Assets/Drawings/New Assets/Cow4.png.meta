@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 64237bc34ed362e4c859588ba9ddf3a0
+guid: f26c66a9c6d5deb4fbc8ffbdd6d04664
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4733585497880782451
-    second: NEW_Pot_0
+      213: 2273727450458177683
+    second: Cow4_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: NEW_Pot_0
+      name: Cow4_0
       rect:
         serializedVersion: 2
-        x: 112
-        y: 39
-        width: 1863
-        height: 1938
+        x: 414
+        y: 379
+        width: 1483
+        height: 849
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d8910ecb11dee4eb0800000000000000
-      internalID: -4733585497880782451
+      spriteID: 3904d98c117ed8f10800000000000000
+      internalID: 2273727450458177683
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      NEW_Pot_0: -4733585497880782451
+      Cow4_0: 2273727450458177683
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

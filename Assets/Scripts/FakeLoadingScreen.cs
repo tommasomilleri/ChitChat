@@ -91,10 +91,11 @@ public class FakeLoadingScreen : MonoBehaviour
 
         if (SimpleCellularTransition.Instance != null)
         {
-            // FASE 2: Scambia le scene al buio, poi rimpicciolisce le bolle svelando il livello
+            // FASE 2: Scambia le scene al buio...
             if (nextLevelPanel != null) nextLevelPanel.SetActive(true);
             this.gameObject.SetActive(false);
 
+            // ...e rimpicciolisce le bolle svelando il nuovo livello!
             SimpleCellularTransition.Instance.PlayIn(null);
         }
         else if (GameManager.instance != null)

@@ -88,6 +88,7 @@ public class SimpleCellularTransition : MonoBehaviour
         float maxDim = Mathf.Max(Screen.width, Screen.height);
         float targetScale = (maxDim / 100f) * 3.5f;
 
+        // Le bolle crescono
         float t = 0f;
         while (t < duration)
         {
@@ -99,6 +100,7 @@ public class SimpleCellularTransition : MonoBehaviour
         }
         foreach (var rt in circles) rt.localScale = new Vector3(targetScale, targetScale, 1f);
 
+        // Invoca l'azione e SI FERMA (lasciando lo schermo coperto di bolle)
         if (onDone != null) onDone();
         busy = false;
     }
@@ -109,6 +111,7 @@ public class SimpleCellularTransition : MonoBehaviour
         float maxDim = Mathf.Max(Screen.width, Screen.height);
         float targetScale = (maxDim / 100f) * 3.5f;
 
+        // Le bolle si rimpiccioliscono
         float t = 0f;
         while (t < duration)
         {
@@ -120,6 +123,7 @@ public class SimpleCellularTransition : MonoBehaviour
         }
         foreach (var rt in circles) rt.localScale = Vector3.zero;
 
+        // Spegne il nero e sblocca
         canvas.gameObject.SetActive(false);
         if (onDone != null) onDone();
         busy = false;

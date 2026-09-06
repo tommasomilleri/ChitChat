@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 public class PauseMenuManager : MonoBehaviour
 {
     // Singleton per accedervi facilmente da ovunque
@@ -35,6 +36,7 @@ public class PauseMenuManager : MonoBehaviour
             return;
         }
     }
+
     void OnDestroy()
     {
         if (Instance == this)
@@ -42,8 +44,8 @@ public class PauseMenuManager : MonoBehaviour
             Instance = null;
             Time.timeScale = 1f;
         }
-
     }
+
     void Start()
     {
         if (pauseMenuContainer != null)
@@ -75,22 +77,25 @@ public class PauseMenuManager : MonoBehaviour
 
     public void PauseGame()
     {
-        if (pauseMenuContainer == null || menuPanel==null)
+        if (pauseMenuContainer == null || menuPanel == null)
         {
             Debug.LogWarning("[PauseMenu] Riferimenti UI mancanti: pausa annullata.");
             return;
         }
+
         isPaused = true;
         pauseMenuContainer.SetActive(true);
         Time.timeScale = 0f;
+
         // Mette in pausa la musica di sottofondo
         if (ProceduralMusicManager.instance != null)
         {
             ProceduralMusicManager.instance.PauseMusic();
         }
+
         if (GameManager.instance != null && GameManager.instance.qualityBarContainer != null)
         {
-            GameManager.instance.qualityBarContainer.SetActive(false); // Usa true per ResumeGame
+            GameManager.instance.qualityBarContainer.SetActive(false); // Scompare in pausa
         }
 
         if (slideCoroutine != null) StopCoroutine(slideCoroutine);
@@ -99,23 +104,26 @@ public class PauseMenuManager : MonoBehaviour
 
     public void ResumeGame()
     {
-
         isPaused = false;
         Time.timeScale = 1f;
+
         // Fa ripartire la musica dal punto esatto in cui si era fermata
         if (ProceduralMusicManager.instance != null)
         {
             ProceduralMusicManager.instance.ResumeMusic();
         }
+
         if (GameManager.instance != null && GameManager.instance.qualityBarContainer != null)
         {
-            GameManager.instance.qualityBarContainer.SetActive(true); // Usa true per ResumeGame
+            GameManager.instance.qualityBarContainer.SetActive(true); // <-- CORRETTO: Ricompare!
         }
+
         if (menuPanel == null)
         {
             if (pauseMenuContainer != null) pauseMenuContainer.SetActive(false);
             return;
         }
+
         if (slideCoroutine != null) StopCoroutine(slideCoroutine);
         slideCoroutine = StartCoroutine(SlideMenu(hiddenYPos, true));
     }
@@ -129,18 +137,21 @@ public class PauseMenuManager : MonoBehaviour
         isPaused = false;
 
         // 2. Ricarica la scena attuale da zero usando il suo Index
-        // Questo distrugge tutto (ingredienti, formaggio rovinato) e fa ripartire il gioco pulito.
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private IEnumerator SlideMenu(float targetY, bool isSlidingOut)
     {
+        if (menuPanel == null) yield break; // LUCCHETTO 1: Previene l'errore se manca la UI
+
         float elapsedTime = 0f;
         Vector2 startPos = menuPanel.anchoredPosition;
         Vector2 endPos = new Vector2(startPos.x, targetY);
 
         while (elapsedTime < slideDuration)
         {
+            if (menuPanel == null) yield break; // LUCCHETTO 2: Previene l'errore se la UI sparisce durante l'animazione
+
             float t = elapsedTime / slideDuration;
             float smoothStep = t * t * (3f - 2f * t);
 
@@ -150,21 +161,20 @@ public class PauseMenuManager : MonoBehaviour
             yield return null;
         }
 
-        menuPanel.anchoredPosition = endPos;
+        if (menuPanel != null) menuPanel.anchoredPosition = endPos;
 
         if (isSlidingOut && pauseMenuContainer != null)
         {
             pauseMenuContainer.SetActive(false);
         }
     }
+
     public void ReplayCurrentLevel()
     {
         if (GameManager.instance == null) return;
 
         int lvlIndex = GameManager.instance.currentLevel;
         GameObject activeLevelGO = null;
-
-
 
         LevelSetup[] allLevels = FindObjectsByType<LevelSetup>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (LevelSetup lvl in allLevels)
@@ -178,10 +188,9 @@ public class PauseMenuManager : MonoBehaviour
 
         if (activeLevelGO != null)
         {
-            // Spegne e riaccende il livello. Questo forza Unity a chiamare di nuovo "OnEnable", resettando tutto!
             activeLevelGO.SetActive(false);
             activeLevelGO.SetActive(true);
-            ResumeGame(); // Togli la pausa
+            ResumeGame();
         }
         else
         {
