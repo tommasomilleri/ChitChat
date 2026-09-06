@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using PixeLadder.EasyTransition;
+
 public class FakeLoadingScreen : MonoBehaviour
 {
     [Header("UI Elements")]
@@ -13,7 +14,6 @@ public class FakeLoadingScreen : MonoBehaviour
 
     [Header("Loading Settings")]
     [Range(1f, 10f)] public float loadingDuration = 4f;
-    public float iconRotationSpeed = -150f;
 
     [Header("Cheese Tips")]
     [TextArea(2, 4)]
@@ -43,7 +43,6 @@ public class FakeLoadingScreen : MonoBehaviour
 
     void Update()
     {
-        if (loadingIcon != null) loadingIcon.Rotate(0, 0, iconRotationSpeed * Time.deltaTime);
         if (isTransitioning) return;
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
