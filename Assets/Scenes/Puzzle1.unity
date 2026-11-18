@@ -454,9 +454,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelManager
   correctImage: 3
   wrongAnswerPenalty: 20
-  NextLevel: {fileID: 1961596488223643428}
-  CurrentLevel: {fileID: 7194454407740051955}
-  canvas: {fileID: 5767763688549115384}
+  NextLevel: {fileID: 0}
+  CurrentLevel: {fileID: 0}
+  canvas: {fileID: 0}
 --- !u!4 &534810883
 Transform:
   m_ObjectHideFlags: 0
@@ -484,8 +484,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc57b49a4783a73489d729af66f3d5cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenuManager
-  pauseMenuContainer: {fileID: 1659583119105111695}
-  menuPanel: {fileID: 308342063282188733}
+  pauseMenuContainer: {fileID: 0}
+  menuPanel: {fileID: 0}
   slideDuration: 0.4
   hiddenYPos: 1200
   visibleYPos: 0
@@ -508,9 +508,9 @@ MonoBehaviour:
   errorsPerLevel: 000000000000000000000000000000000000000000000000
   currentLevel: 1
   runStartTime: 0
-  globalQualityBar: {fileID: 1863374731329368398}
-  qualityBarContainer: {fileID: 6901092182536313781}
-  endingPanel: {fileID: 2746951970204591762}
+  globalQualityBar: {fileID: 0}
+  qualityBarContainer: {fileID: 0}
+  endingPanel: {fileID: 0}
   levelTransitionEffect: {fileID: 11400000, guid: 7cb3a7472a36ad5468072f6ca7b2d68f, type: 2}
   onPlayTransition:
     m_PersistentCalls:
@@ -528,7 +528,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   transitionDelay: 1.5
-  globalLoadingScreen: {fileID: 3278702044869958185}
+  globalLoadingScreen: {fileID: 0}
 --- !u!114 &534810887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -542,9 +542,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VolumeSettings
   myMixer: {fileID: 24100000, guid: 0df3c5e7d45edef4b8dd8449ebba0cf0, type: 2}
-  masterSlider: {fileID: 5083172376868627871}
-  musicSlider: {fileID: 3042938146202787507}
-  sfxSlider: {fileID: 7389221726168589698}
+  masterSlider: {fileID: 0}
+  musicSlider: {fileID: 0}
+  sfxSlider: {fileID: 0}
 --- !u!1 &565254921
 GameObject:
   m_ObjectHideFlags: 0
@@ -1755,7 +1755,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &666206828252631506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3984,11 +3984,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6760916978629599304}
   m_CullTransparentMesh: 1
---- !u!1 &2746951970204591762 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 853747361423843748, guid: e836ed3591b61204eadb2d3ff8e85a71, type: 3}
-  m_PrefabInstance: {fileID: 978498780220486911}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2768408850202325597
 GameObject:
   m_ObjectHideFlags: 0
@@ -11262,11 +11257,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 681c24c95792b4d42b188db8617d2582, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuManager
-  StartPage: {fileID: 622138210741317918}
-  StoryPage: {fileID: 2311385992447021873}
-  TutorialPage: {fileID: 2031544861381265797}
-  PlayerSelectPage: {fileID: 1894013605321373980}
-  Lvl1: {fileID: 7194454407740051955}
+  StartPage: {fileID: 0}
+  StoryPage: {fileID: 0}
+  TutorialPage: {fileID: 0}
+  PlayerSelectPage: {fileID: 0}
+  Lvl1: {fileID: 0}
 --- !u!114 &8312296201212847457
 MonoBehaviour:
   m_ObjectHideFlags: 0
