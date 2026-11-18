@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 public class SimpleCellularTransition : MonoBehaviour
 {
     public static SimpleCellularTransition Instance;
@@ -20,6 +19,7 @@ public class SimpleCellularTransition : MonoBehaviour
     private Canvas canvas;
     private List<RectTransform> circles = new List<RectTransform>();
     private bool busy;
+    public bool IsBusy { get { return busy; } }
 
     void Awake()
     {
@@ -42,7 +42,6 @@ public class SimpleCellularTransition : MonoBehaviour
         canvas.sortingOrder = 999;
         go.AddComponent<GraphicRaycaster>();
 
-        // Crea le bolle sparse casualmente per lo schermo
         for (int i = 0; i < numberOfCircles; i++)
         {
             GameObject imgGO = new GameObject("Bubble_" + i);
@@ -50,11 +49,8 @@ public class SimpleCellularTransition : MonoBehaviour
             Image circle = imgGO.AddComponent<Image>();
             circle.color = circleColor;
             circle.sprite = circleSprite;
-            circle.raycastTarget = true; // Blocca i click
-
+            circle.raycastTarget = true; 
             RectTransform rt = circle.rectTransform;
-
-            // Posiziona il centro del cerchio in un punto a caso dello schermo
             float randX = UnityEngine.Random.Range(0f, 1f);
             float randY = UnityEngine.Random.Range(0f, 1f);
 
@@ -63,23 +59,35 @@ public class SimpleCellularTransition : MonoBehaviour
             rt.pivot = new Vector2(0.5f, 0.5f);
             rt.anchoredPosition = Vector2.zero;
             rt.sizeDelta = new Vector2(100f, 100f);
-            rt.localScale = Vector3.zero; // Partono invisibili
+            rt.localScale = Vector3.zero; 
 
             circles.Add(rt);
         }
 
         go.SetActive(false);
     }
+
     public void PlayOut(Action onDone)
     {
-        if (!busy) StartCoroutine(OutRoutine(onDone));
+        if (busy)
+        {
+            Debug.LogWarning("[CellularTransition] PlayOut ignorata: transizione gia' in corso.");
+            if (onDone != null) onDone();
+            return;
+        }
+        StartCoroutine(OutRoutine(onDone));
     }
 
     public void PlayIn(Action onDone)
     {
-        if (!busy) StartCoroutine(InRoutine(onDone));
+        if (busy)
+        {
+            Debug.LogWarning("[CellularTransition] PlayIn ignorata: transizione gia' in corso.");
+            if (onDone != null) onDone();
+            return;
+        }
+        StartCoroutine(InRoutine(onDone));
     }
-
     IEnumerator OutRoutine(Action onDone)
     {
         busy = true;
@@ -87,8 +95,6 @@ public class SimpleCellularTransition : MonoBehaviour
 
         float maxDim = Mathf.Max(Screen.width, Screen.height);
         float targetScale = (maxDim / 100f) * 3.5f;
-
-        // Le bolle crescono
         float t = 0f;
         while (t < duration)
         {
@@ -100,18 +106,17 @@ public class SimpleCellularTransition : MonoBehaviour
         }
         foreach (var rt in circles) rt.localScale = new Vector3(targetScale, targetScale, 1f);
 
-        // Invoca l'azione e SI FERMA (lasciando lo schermo coperto di bolle)
-        if (onDone != null) onDone();
         busy = false;
+        if (onDone != null) onDone();
     }
 
     IEnumerator InRoutine(Action onDone)
     {
         busy = true;
+        canvas.gameObject.SetActive(true);
+
         float maxDim = Mathf.Max(Screen.width, Screen.height);
         float targetScale = (maxDim / 100f) * 3.5f;
-
-        // Le bolle si rimpiccioliscono
         float t = 0f;
         while (t < duration)
         {
@@ -122,10 +127,8 @@ public class SimpleCellularTransition : MonoBehaviour
             yield return null;
         }
         foreach (var rt in circles) rt.localScale = Vector3.zero;
-
-        // Spegne il nero e sblocca
         canvas.gameObject.SetActive(false);
-        if (onDone != null) onDone();
         busy = false;
+        if (onDone != null) onDone();
     }
 }

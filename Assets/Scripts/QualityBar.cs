@@ -8,8 +8,6 @@ public class QualityBar : MonoBehaviour
     [Tooltip("Trascina qui l'oggetto 'Fill' dalla Hierarchy")]
     public Image moldFillImage;
     private int maxQuality = 100;
-
-    // Tiene traccia di dove si trova la barra visivamente
     private float displayedQuality = 100f;
 
     public void SetMaxQuality(int quality)
@@ -21,7 +19,14 @@ public class QualityBar : MonoBehaviour
 
     public void SetQuality(int quality)
     {
-        StopAllCoroutines(); // Ferma animazioni precedenti
+        /*
+        if (!gameObject.activeInHierarchy)
+        {
+            if (moldFillImage != null) moldFillImage.fillAmount = 1f - (float)quality / maxQuality;   // <-- usa il TUO campo (slider/fillImage)
+            return;
+        }*/
+
+        StopAllCoroutines();
         StartCoroutine(AnimateMoldVisual(quality));
     }
 
@@ -30,16 +35,12 @@ public class QualityBar : MonoBehaviour
         float duration = 0.4f;
         float elapsed = 0f;
         float startQuality = displayedQuality;
-
-        // Piccola animazione "Wobble" della barra quando subisce danno (scala 1 -> 1.06 -> 1)
         Vector3 originalScale = transform.localScale;
         StartCoroutine(WobbleRoutine(originalScale));
 
         while (elapsed < duration)
         {
             elapsed += Time.unscaledDeltaTime;
-
-            // Smoothstep per un movimento elastico
             float t = Mathf.SmoothStep(0f, 1f, elapsed / duration);
             displayedQuality = Mathf.Lerp(startQuality, targetQuality, t);
 
@@ -64,7 +65,6 @@ public class QualityBar : MonoBehaviour
         }
         transform.localScale = originalScale;
     }
-
     private void UpdateMoldVisual(float currentQuality, bool instant)
     {
         if (moldFillImage != null && maxQuality > 0)
@@ -72,11 +72,8 @@ public class QualityBar : MonoBehaviour
             float healthPercent = currentQuality / maxQuality;
             float moldPercent = 1f - healthPercent;
             moldFillImage.fillAmount = moldPercent;
-
-            // Feedback cromatico pulsante
             if (healthPercent < 0.4f)
             {
-                // Muffa aggressiva + Pulsazione alpha (Respira!)
                 float pulse = 0.8f + Mathf.Sin(Time.unscaledTime * 5f) * 0.2f;
                 moldFillImage.color = new Color(0.55f, 0.85f, 0.4f, pulse);
             }
@@ -93,7 +90,6 @@ public class QualityBar : MonoBehaviour
 
     void Update()
     {
-        // Necessario per continuare a far pulsare l'alpha anche a riposo se la salute è bassa
         if (moldFillImage != null && displayedQuality / maxQuality < 0.4f)
         {
             UpdateMoldVisual(displayedQuality, false);
@@ -102,7 +98,6 @@ public class QualityBar : MonoBehaviour
 
     void OnDisable()
     {
-        // Pulizia sicura in OnDisable[cite: 1]
         StopAllCoroutines();
         transform.localScale = Vector3.one;
     }

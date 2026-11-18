@@ -15,6 +15,13 @@ public class GameManager : MonoBehaviour
     public int currentLevel = 1;
     public float runStartTime;
 
+    [Header("3D Stations")]
+    public int unlockedStation = 0;
+
+        [Header("Stato Gameplay")]
+    [Tooltip("True solo tra SelectPlayer2 e l'ending: l'Interactor raycasta solo se true")]
+    public bool gameplayActive = false;
+
     [Tooltip("Drag the QualityBar UI object here just ONCE!")]
     public QualityBar globalQualityBar;
     public GameObject qualityBarContainer;
@@ -22,16 +29,28 @@ public class GameManager : MonoBehaviour
     [Header("Story Endings Settings")]
     public GameObject endingPanel;
 
-    // (La variabile levelTransitionEffect non serve più, ma la lascio per non rompere l'Inspector)
     [Header("Easy Transition")]
     public PixeLadder.EasyTransition.TransitionEffect levelTransitionEffect;
 
-    [Header("Transition Settings (NOVITA')")]
+    [Header("Transition Settings")]
     public UnityEvent onPlayTransition;
     public float transitionDelay = 1.5f;
 
     [Header("Loading Screen Universale")]
     public FakeLoadingScreen globalLoadingScreen;
+
+    [Header("Developer Cheat (Skip Level)")]
+    [Tooltip("Trascina qui tutti i GoST in ordine (GoST1, GoST2, GoST3...)")]
+    public GameObject[] debugGoSTSequence;
+
+        [Header("Transition Unlock")]
+    [Tooltip("Tempo dopo il PlayIn oltre il quale la transizione si considera conclusa")]
+    public float transitionUnlockDelay = 1.2f;
+
+    private bool isChangingLevel = false;
+    public bool IsChangingLevel { get { return isChangingLevel; } }
+
+        private bool endingTriggered = false;
 
     void Awake()
     {
@@ -57,10 +76,13 @@ public class GameManager : MonoBehaviour
             globalQualityBar.SetQuality(currentQuality);
             globalQualityBar.gameObject.SetActive(false);
         }
+                if (qualityBarContainer != null) qualityBarContainer.SetActive(false);
     }
 
     public void DecreaseGlobalQuality(int damage)
     {
+                if (endingTriggered) return;
+
         currentQuality -= damage;
         if (currentLevel >= 1 && currentLevel <= 5)
         {
@@ -76,37 +98,23 @@ public class GameManager : MonoBehaviour
         if (currentQuality <= 0)
         {
             currentQuality = 0;
-            Debug.Log("Quality hit zero! Instant Bad Ending!");
-            TriggerEnding();
-
             if (globalQualityBar != null)
-            {
-                globalQualityBar.gameObject.SetActive(false);
-            }
+                globalQualityBar.SetQuality(0);               TriggerEnding();
         }
         else
         {
-            Debug.Log("Global Quality is now: " + currentQuality);
             if (globalQualityBar != null)
-            {
                 globalQualityBar.SetQuality(currentQuality);
-            }
         }
     }
 
     public void TriggerEnding()
     {
-        Debug.Log("Triggering Ending Panel. Final Quality: " + currentQuality);
-
-        if (endingPanel != null)
-        {
-            endingPanel.SetActive(true);
-        }
-
-        if (qualityBarContainer != null)
-        {
-            qualityBarContainer.SetActive(false);
-        }
+        if (endingTriggered) return;                      endingTriggered = true;
+        gameplayActive = false;                   
+        if (endingPanel != null) endingPanel.SetActive(true);
+        if (qualityBarContainer != null) qualityBarContainer.SetActive(false);
+        if (globalQualityBar != null) globalQualityBar.gameObject.SetActive(false);
     }
 
     public void ResetQuality()
@@ -114,16 +122,24 @@ public class GameManager : MonoBehaviour
         currentQuality = maxQuality;
         runStartTime = Time.time;
         errorsPerLevel = new int[6];
+        currentLevel = 1;
+        unlockedStation = 0;
+        isChangingLevel = false;
+        endingTriggered = false;                          gameplayActive = false;                   
         if (globalQualityBar != null)
         {
             globalQualityBar.SetMaxQuality(maxQuality);
             globalQualityBar.SetQuality(currentQuality);
             globalQualityBar.gameObject.SetActive(false);
         }
-        if (endingPanel != null) endingPanel.SetActive(false);
+        if (qualityBarContainer != null) qualityBarContainer.SetActive(false);          if (endingPanel != null) endingPanel.SetActive(false);
     }
 
-    // --- LA MAGIA DELLE TRANSIZIONI ---
+    public void NotifyTransitionFinished()
+    {
+        isChangingLevel = false;
+    }
+
     public void TransitionBetweenPanels(GameObject currentPanel, GameObject nextPanel)
     {
         if (onPlayTransition != null && onPlayTransition.GetPersistentEventCount() > 0)
@@ -133,39 +149,101 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            if (nextPanel != null) nextPanel.SetActive(true); // <-- CORRETTO QUI! (Era nextLevel)
+            if (nextPanel != null) nextPanel.SetActive(true);
             if (currentPanel != null) currentPanel.SetActive(false);
         }
     }
 
-    // --- IL NUOVO PONTE UNIVERSALE (AGGIORNATO AL CELLULAR SENZA SHADER) ---
-    public void TransitionToNextLevel(GameObject currentLevel, GameObject targetLevel)
+            public void TransitionToNextLevel(GameObject fromPanel, GameObject targetLevel)
     {
-        // Chiama il NOSTRO script infallibile invece di quello dell'asset
+        if (isChangingLevel)
+        {
+            Debug.LogWarning("[GameManager] TransitionToNextLevel ignorata: gia' in corso.");
+            return;
+        }
+        if (targetLevel == null)
+        {
+            Debug.LogError("[GameManager] targetLevel NULL! Assegna NextLevel nell'Inspector.");
+            return;
+        }
+        if (targetLevel == fromPanel)
+        {
+            Debug.LogError("[GameManager] NextLevel == CurrentLevel! Controlla l'Inspector.");
+            return;
+        }
+
+        isChangingLevel = true;
+        unlockedStation++;
+
+        StartLoadingSequence(fromPanel, targetLevel);
+    }
+
+    public void TransitionIntoFirstLevel(GameObject currentPanel, GameObject firstLevel)
+    {
+        if (isChangingLevel)
+        {
+            Debug.LogWarning("[GameManager] TransitionIntoFirstLevel ignorata: gia' in corso.");
+            return;
+        }
+        if (firstLevel == null)
+        {
+            Debug.LogError("[GameManager] firstLevel NULL!");
+            return;
+        }
+
+        isChangingLevel = true;
+        unlockedStation = 0;
+        gameplayActive = true;                            endingTriggered = false;
+
+        StartLoadingSequence(currentPanel, firstLevel);
+    }
+
+    private void StartLoadingSequence(GameObject currentPanel, GameObject targetPanel)
+    {
         if (SimpleCellularTransition.Instance != null && globalLoadingScreen != null)
         {
-            globalLoadingScreen.nextLevelPanel = targetLevel;
-
-            // FASE 1: Le bolle crescono per coprire lo schermo e ci restano!
             SimpleCellularTransition.Instance.PlayOut(() =>
             {
-                globalLoadingScreen.gameObject.SetActive(true);
-                if (currentLevel != null) currentLevel.SetActive(false);
+                if (currentPanel != null) currentPanel.SetActive(false);
+                globalLoadingScreen.BeginLoading(targetPanel);
             });
+            return;
         }
-        else
+
+        if (globalLoadingScreen != null)
         {
-            // Fallback: vecchio sistema a pannelli
-            if (globalLoadingScreen != null)
-            {
-                globalLoadingScreen.nextLevelPanel = targetLevel;
-                TransitionBetweenPanels(currentLevel, globalLoadingScreen.gameObject);
-            }
-            else
-            {
-                TransitionBetweenPanels(currentLevel, targetLevel);
-            }
+            if (currentPanel != null) currentPanel.SetActive(false);
+            globalLoadingScreen.BeginLoading(targetPanel);
+            return;
         }
+
+        Debug.LogWarning("[GameManager] LoadingScreen mancante: passaggio diretto al livello.");
+        targetPanel.SetActive(true);
+        if (currentPanel != null) currentPanel.SetActive(false);
+        isChangingLevel = false;
+    }
+
+    public void ActivatePanelNextFrame(GameObject panel)
+    {
+        StartCoroutine(ActivatePanelRoutine(panel));
+    }
+
+    private IEnumerator ActivatePanelRoutine(GameObject panel)
+    {
+        yield return null;
+
+        if (panel != null)
+        {
+            panel.SetActive(true);
+
+            if (!panel.activeInHierarchy)
+                Debug.LogError("[GameManager] " + panel.name + ": il padre e' spento!", panel);
+        }
+
+        if (SimpleCellularTransition.Instance != null)
+            SimpleCellularTransition.Instance.PlayIn(null);
+
+        yield return new WaitForSecondsRealtime(transitionUnlockDelay);          isChangingLevel = false;
     }
 
     private IEnumerator SwapAfterDelay(GameObject current, GameObject next, float delay)
@@ -173,5 +251,33 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(delay);
         if (next != null) next.SetActive(true);
         if (current != null) current.SetActive(false);
+    }
+
+    void Update()
+    {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        if (Input.GetKeyDown(KeyCode.F12) && !isChangingLevel)
+        {
+            DevSkipLevel();
+        }
+#endif
+    }
+
+    void DevSkipLevel()
+    {
+        if (debugGoSTSequence == null || debugGoSTSequence.Length == 0) return;
+
+        for (int i = 0; i < debugGoSTSequence.Length - 1; i++)
+        {
+            if (debugGoSTSequence[i] != null && debugGoSTSequence[i].activeInHierarchy)
+            {
+                Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+                gameplayActive = true;                   TransitionToNextLevel(debugGoSTSequence[i], debugGoSTSequence[i + 1]);
+
+                return;
+            }
+        }
+
+        Debug.LogWarning("Nessun GoST da saltare o sei gia' all'ultimo livello!");
     }
 }
